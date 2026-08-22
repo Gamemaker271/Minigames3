@@ -12,25 +12,67 @@ var xpos = 0;
 var ypos = 0;
 
 /*----- Input -----*/
-var spacekey = false;
-var lastspacekey = false;
+var upkey = false;
+var lastupkey = false;
+var downkey = false;
+var lastdownkey = false;
+var leftkey = false;
+var lastleftkey = false;
+var rightkey = false;
+var lastrightkey = false;
 
 function handleKeyDown(event){
-  lastspacekey = spacekey;
+  lastupkey = upkey;
+  lastdownkey = downkey;
+  lastleftkey = leftkey;
+  lasrightkey = rightkey;
   // controls
-  if (event.key === ' ') {
-    spacekey = true;
+  if (event.key === 'UpArrow') {
+    upkey = true;
   }
-}
-function handleKeyUp(event){
-  // controls
-  if (event.key === ' ') {
-    spacekey = false;
+  else{
+    upkey = false;
+  }
+  if (event.key === 'DownArrow') {
+    downkey = true;
+  }
+  else{
+    downkey = false;
+  }
+  if (event.key === 'LeftArrow') {
+    leftkey = true;
+  }
+  else{
+    leftkey = false;
+  }
+  if (event.key === 'RightArrow') {
+    rightkey = true;
+  }
+  else{
+    rightkey = false;
   }
 }
 
 function Logic(){
 
+
+  // boundaries
+  if(xpos < 0)
+  {
+    xpos = 0;
+  }
+  if(xpos > screenw)
+  {
+    xpos = screenw;
+  }
+  if(ypos < 0)
+  {
+    ypos = 0;
+  }
+  if(ypos > screenh)
+  {
+    ypos = screenh;
+  }
 }
 
 function Draw(){
@@ -51,5 +93,4 @@ function Update() {
 }
 
 window.addEventListener('keydown', handleKeyDown);
-window.addEventListener('keyup', handleKeyUp);
 loop = setInterval(Update, 16); // 33 = 30 fps, 100 = 10fps
