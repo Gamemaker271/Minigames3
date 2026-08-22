@@ -1,0 +1,7 @@
+body{
+  font-family: sans-serif;
+}
+.gameblock{
+  border: black 1px solid;
+  padding: 2px;
+}
