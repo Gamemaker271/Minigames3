@@ -1,6 +1,10 @@
 body{
   font-family: sans-serif;
 }
+main{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
 .gameblock{
   border: black 1px solid;
   padding: 2px;
