@@ -54,7 +54,18 @@ function handleKeyDown(event){
 }
 
 function Logic(){
-
+  if(upkey){
+    ypos -= 1;
+  }
+  if(downkey){
+    ypos += 1;
+  }
+  if(leftkey){
+    xpos -= 1;
+  }
+  if(rightkey){
+    xpos += 1;
+  }
 
   // boundaries
   if(xpos < 0)
