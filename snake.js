@@ -11,6 +11,9 @@ const gridSize = 50;
 var xpos = 0;
 var ypos = 0;
 
+var applex = 0;
+var appley = 0;
+
 var direction = "stop";
 
 /*----- Input -----*/
@@ -119,13 +122,19 @@ function Logic(){
 function Draw(){
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = 'black';
-  ctx.font = '16px sans-serif';
-  ctx.fillText(0, ((screenw / 2) * gridSize) - 4, gridSize);
+  
+  // apple
+  ctx.fillStyle = 'red';
+  ctx.fillRect(applex * gridSize, appley * gridSize, gridSize, gridSize);
 
   // head
   ctx.fillStyle = 'green';
   ctx.fillRect(xpos * gridSize, ypos * gridSize, gridSize, gridSize);
+
+  // score
+  ctx.fillStyle = 'black';
+  ctx.font = '16px sans-serif';
+  ctx.fillText(0, ((screenw / 2) * gridSize) - 4, gridSize);
 }
 
 function Update() {
