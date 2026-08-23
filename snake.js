@@ -121,7 +121,7 @@ function Draw(){
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = 'black';
   ctx.font = '16px sans-serif';
-  ctx.fillText('something', 160, 48);
+  ctx.fillText(0, (screenw / 2) - 16, 48);
 
   // head
   ctx.fillStyle = 'green';
