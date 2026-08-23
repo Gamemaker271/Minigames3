@@ -144,5 +144,5 @@ function Update() {
 
 window.addEventListener('keydown', handleKeyDown);
 window.addEventListener('keyup', handleKeyUp);
-loop = setInterval(Update, 300); // 16 = 60fps, 33 = 30 fps, 100 = 10fps, 200 = 5fps
+loop = setInterval(Update, 200); // 16 = 60fps, 33 = 30 fps, 100 = 10fps, 200 = 5fps
 Reset();
