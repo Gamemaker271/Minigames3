@@ -121,7 +121,7 @@ function Draw(){
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = 'black';
   ctx.font = '16px sans-serif';
-  ctx.fillText(0, (screenw / 2) - 16, 48);
+  ctx.fillText(0, ((screenw / 2) * gridSize) - 8, 48);
 
   // head
   ctx.fillStyle = 'green';
@@ -135,5 +135,5 @@ function Update() {
 
 window.addEventListener('keydown', handleKeyDown);
 window.addEventListener('keyup', handleKeyUp);
-loop = setInterval(Update, 100); // 16 = 60fps 33 = 30 fps, 100 = 10fps
+loop = setInterval(Update, 200); // 16 = 60fps, 33 = 30 fps, 100 = 10fps, 200 = 5fps
 Reset();
