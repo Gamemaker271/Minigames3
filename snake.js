@@ -60,17 +60,17 @@ function Logic(){
   {
     xpos = 0;
   }
-  if(xpos > screenw)
+  if(xpos > screenw - 1)
   {
-    xpos = screenw;
+    xpos = screenw - 1;
   }
   if(ypos < 0)
   {
     ypos = 0;
   }
-  if(ypos > screenh)
+  if(ypos > screenh - 1)
   {
-    ypos = screenh;
+    ypos = screenh - 1;
   }
 }
 
@@ -83,7 +83,7 @@ function Draw(){
 
   // head
   ctx.fillStyle = 'green';
-  ctx.fillRect(xpos, ypos, gridSize, gridSize);
+  ctx.fillRect(xpos * gridSize, ypos * gridSize, gridSize, gridSize);
 
   upkey = false;
   downkey = false;
