@@ -58,6 +58,12 @@ function handleKeyUp(event){
   }
 }
 
+function Reset(){
+  xpos = floor(screenw / 2);
+  ypos = floor(screenh / 2);
+  direction = "stop";
+}
+
 function Logic(){
   // set direction
   if(upkey){
@@ -90,19 +96,23 @@ function Logic(){
   // boundaries
   if(xpos < 0)
   {
-    xpos = 0;
+    //xpos = 0;
+    Reset();
   }
   if(xpos > screenw - 1)
   {
-    xpos = screenw - 1;
+    //xpos = screenw - 1;
+    Reset();
   }
   if(ypos < 0)
   {
-    ypos = 0;
+    //ypos = 0;
+    Reset();
   }
   if(ypos > screenh - 1)
   {
-    ypos = screenh - 1;
+    //ypos = screenh - 1;
+    Reset();
   }
 }
 
@@ -126,3 +136,4 @@ function Update() {
 window.addEventListener('keydown', handleKeyDown);
 window.addEventListener('keyup', handleKeyUp);
 loop = setInterval(Update, 100); // 16 = 60fps 33 = 30 fps, 100 = 10fps
+Reset();
