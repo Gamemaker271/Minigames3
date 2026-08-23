@@ -69,16 +69,16 @@ function Reset(){
 
 function Logic(){
   // set direction
-  if(upkey){
+  if(upkey && !lastupkey){
     direction = "up";
   }
-  if(downkey){
+  if(downkey && !lastdownkey){
     direction = "down";
   }
-  if(leftkey){
+  if(leftkey && !lastleftkey){
     direction = "left";
   }
-  if(rightkey){
+  if(rightkey && !lastrightkey){
     direction = "right";
   }
 
