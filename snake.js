@@ -14,6 +14,8 @@ var ypos = 0;
 var applex = 0;
 var appley = 0;
 
+var score = 0;
+
 var direction = "stop";
 
 /*----- Input -----*/
@@ -67,6 +69,16 @@ function Reset(){
   direction = "stop";
 }
 
+function Apple(){
+  score++;
+  applex = Math.floor(Math.random() * screenw);// 0 to screenw - 1
+  appley = Math.floor(Math.random() * screenh);// 0 to screenh - 1
+  while (xpos == applex && ypos == appley){
+    applex = Math.floor(Math.random() * screenw);
+    appley = Math.floor(Math.random() * screenh);
+  }
+}
+
 function Logic(){
   // set direction
   if(upkey && !lastupkey){
@@ -94,6 +106,10 @@ function Logic(){
   }
   if(direction == "right"){
     xpos += 1;
+  }
+
+  if(xpos == applex && ypos == appley){
+    Apple();
   }
 
   // boundaries
