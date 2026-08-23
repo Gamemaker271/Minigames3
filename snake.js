@@ -25,31 +25,19 @@ function handleKeyDown(event){
   lastupkey = upkey;
   lastdownkey = downkey;
   lastleftkey = leftkey;
-  lasrightkey = rightkey;
+  lastrightkey = rightkey;
   // controls
-  if (event.key === 'UpArrow') {
+  if (event.key === 'ArrowUp') {
     upkey = true;
   }
-  else{
-    upkey = false;
-  }
-  if (event.key === 'DownArrow') {
+  if (event.key === 'ArrowDown') {
     downkey = true;
   }
-  else{
-    downkey = false;
-  }
-  if (event.key === 'LeftArrow') {
+  if (event.key === 'ArrowLeft') {
     leftkey = true;
   }
-  else{
-    leftkey = false;
-  }
-  if (event.key === 'RightArrow') {
+  if (event.key === 'ArrowRight') {
     rightkey = true;
-  }
-  else{
-    rightkey = false;
   }
 }
 
@@ -96,6 +84,11 @@ function Draw(){
   // head
   ctx.fillStyle = 'green';
   ctx.fillRect(xpos, ypos, gridSize, gridSize);
+
+  upkey = false;
+  downkey = false;
+  leftkey = false;
+  rightkey = false;
 }
 
 function Update() {
