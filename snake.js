@@ -59,8 +59,8 @@ function handleKeyUp(event){
 }
 
 function Reset(){
-  xpos = floor(screenw / 2);
-  ypos = floor(screenh / 2);
+  xpos = Math.floor(screenw / 2);
+  ypos = Math.floor(screenh / 2);
   direction = "stop";
 }
 
