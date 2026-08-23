@@ -11,6 +11,8 @@ const gridSize = 50;
 var xpos = 0;
 var ypos = 0;
 
+var direction = "stop";
+
 /*----- Input -----*/
 var upkey = false;
 var lastupkey = false;
@@ -57,16 +59,31 @@ function handleKeyUp(event){
 }
 
 function Logic(){
+  // set direction
   if(upkey){
-    ypos -= 1;
+    direction = "up";
   }
   if(downkey){
-    ypos += 1;
+    direction = "down";
   }
   if(leftkey){
-    xpos -= 1;
+    direction = "left";
   }
   if(rightkey){
+    direction = "right";
+  }
+
+  // move
+  if(direction == "up"){
+    ypos -= 1;
+  }
+  if(direction == "down"){
+    ypos += 1;
+  }
+  if(direction == "left"){
+    xpos -= 1;
+  }
+  if(direction == "right"){
     xpos += 1;
   }
 
@@ -107,4 +124,5 @@ function Update() {
 }
 
 window.addEventListener('keydown', handleKeyDown);
-loop = setInterval(Update, 16); // 33 = 30 fps, 100 = 10fps
+window.addEventListener('keyup', handleKeyUp);
+loop = setInterval(Update, 100); // 16 = 60fps 33 = 30 fps, 100 = 10fps
