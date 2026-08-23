@@ -64,6 +64,7 @@ function handleKeyUp(event){
 }
 
 function Reset(){
+  score = 0;
   xpos = Math.floor(screenw / 2) - 1;
   ypos = Math.floor(screenh / 2) - 1;
   direction = "stop";
@@ -150,7 +151,7 @@ function Draw(){
   // score
   ctx.fillStyle = 'black';
   ctx.font = '16px sans-serif';
-  ctx.fillText(0, ((screenw / 2) * gridSize) - 4, gridSize);
+  ctx.fillText(score, ((screenw / 2) * gridSize) - 4, gridSize);
 }
 
 function Update() {
