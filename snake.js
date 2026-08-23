@@ -40,6 +40,21 @@ function handleKeyDown(event){
     rightkey = true;
   }
 }
+function handleKeyUp(event){
+  // controls
+  if (event.key === 'ArrowUp') {
+    upkey = false;
+  }
+  if (event.key === 'ArrowDown') {
+    downkey = false;
+  }
+  if (event.key === 'ArrowLeft') {
+    leftkey = false;
+  }
+  if (event.key === 'ArrowRight') {
+    rightkey = false;
+  }
+}
 
 function Logic(){
   if(upkey){
@@ -84,11 +99,6 @@ function Draw(){
   // head
   ctx.fillStyle = 'green';
   ctx.fillRect(xpos * gridSize, ypos * gridSize, gridSize, gridSize);
-
-  upkey = false;
-  downkey = false;
-  leftkey = false;
-  rightkey = false;
 }
 
 function Update() {
