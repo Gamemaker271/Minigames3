@@ -8,7 +8,7 @@ const h = canvas.height;
 
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias : true });
 renderer.setSize(w, h);
-//document.body.appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement);
 
 const fov = 75;
 const aspect = w / h;
