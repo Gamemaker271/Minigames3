@@ -1,14 +1,14 @@
-//const canvas = document.getElementById('my3dCanvas');
-//const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('my3dCanvas');
+const ctx = canvas.getContext('2d');
 
 import * as THREE from "three";
 
-const w = window.innerWidth;
-const h = window.innerHeight;
+const w = canvas.width;
+const h = canvas.height;
 
-const renderer = new THREE.WebGLRenderer({ /*canvas: canvas,*/ antialias : true });
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias : true });
 renderer.setSize(w, h);
-document.body.appendChild(renderer.domElement);
+//document.body.appendChild(renderer.domElement);
 
 const fov = 75;
 const aspect = w / h;
