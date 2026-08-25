@@ -27,4 +27,9 @@ const mat = new THREE.MeshBasicMaterial({
 const mesh = new THREE.Mesh(geo, mat);
 scene.add(mesh);
 
-renderer.render(scene, camera);
+function animate(t = 0){
+    requestAnimationFrame(animate);
+    mesh.scale.setScalar(Math.cos(t * 0.001 + 1));
+    renderer.render(scene, camera);
+}
+animate();
