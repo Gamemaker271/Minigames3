@@ -17,6 +17,9 @@ main{
   margin: 2px;
   text-align: center;
 }
+.gameblock > img {
+  height: 200px;
+}
 
 button{
   background-color: #cccccc;
