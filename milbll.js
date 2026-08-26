@@ -23,6 +23,9 @@ const playerheight = gridSize * 0.75;
 var noclip = false;
 var macro = false;
 
+var mob1x = 0; // offset
+var mob1y = 0;
+
 var levelposition = 0;
 
 var trailpositions = [];
@@ -46,6 +49,7 @@ function handleAndDrawObstacles() {
   for (let i = obstacles.length - 1; i >= 0; i--) {
     let obs = obstacles[i];
     let drawX = obs.x - levelposition;
+    let drawY = obs.y;
 
     // --- DRAWING LOGIC ---
     ctx.fillStyle = '#FF4136';
@@ -55,6 +59,14 @@ function handleAndDrawObstacles() {
     if (obs.type === 'cube') {
       ctx.fillRect(drawX, obs.y, obs.width, obs.height);
       ctx.strokeRect(drawX, obs.y, obs.width, obs.height);
+    } else if (obs.type === 'mob') {
+      if(obs.x === Math.floor(obs.x)){
+        ctx.fillStyle = 'green';
+      } else {
+        ctx.fillStyle = 'red';
+      }
+      ctx.fillRect(drawX + mob1x * gridSize, obs.y + mob1y * gridSize, obs.width, obs.height);
+      ctx.strokeRect(drawX + mob1x * gridSize, obs.y + mob1y * gridSize, obs.width, obs.height);
     } else if (obs.type === 'end') {
       ctx.fillStyle = 'yellow';
       ctx.fillRect(drawX, obs.y, obs.width, obs.height);
@@ -86,15 +98,21 @@ function handleAndDrawObstacles() {
 
     // --- COLLISION LOGIC --- //
     // First step: broad AABB check (is the player even touching the general tile zone?)
+    
+    if(obstacles.type === 'mob'){
+      drawX += mob1x * gridSize;
+      drawY += mob1y * gridSize;
+    }
+
     let boxCollision = (
       playerx < drawX + obs.width &&
       playerx + playerwidth > drawX &&
-      playery < obs.y + obs.height &&
-      playery + playerheight > obs.y
+      playery < drawY + obs.height &&
+      playery + playerheight > drawY
     );
 
     if (boxCollision) {
-      if (obs.type === 'cube' && !noclip) {
+      if ((obs.type === 'cube' || obs.type === 'mob') && !noclip) {
         if(dblock && spacekey){
             playery += speed * 2;
         }else if(dblock){
@@ -251,6 +269,9 @@ function handleKeyUp(event){
 
 function Logic(){
   levelposition += speed;
+  if(levelposition > 500){
+    mob1x += 0.03;
+  }
 
   // trail stuff
   // Save current position to the start of array
@@ -426,6 +447,8 @@ async function Reset(){
     for (let c = 0; c < selectedlevel[r].length; c++) {
       if (selectedlevel[r][c] === '#') {
         spawnObstacle(c * gridSize, r * gridSize, 'cube');
+      } else if (selectedlevel[r][c] === 'm') { 
+        spawnObstacle(c * gridSize, r * gridSize, 'mob'); // mobile objects
       } else if (selectedlevel[r][c] === 'e') { 
         spawnObstacle(c * gridSize, r * gridSize, 'end'); // end trigger
       } else if (selectedlevel[r][c] === 'L') { 
