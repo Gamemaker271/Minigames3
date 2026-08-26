@@ -9,8 +9,6 @@ const screenw = 400;
 const screenh = 300;
 
 var speed = 5;
-//var shipSpeed = speed;
-//var counter = 0; //gravity portal Iframes
 
 var gamemode = "wave";
 
@@ -62,14 +60,6 @@ function handleAndDrawObstacles() {
       ctx.fillStyle = 'yellow';
       ctx.fillRect(drawX, obs.y, obs.width, obs.height);
       ctx.strokeRect(drawX, obs.y, obs.width, obs.height);
-    } else if (obs.type === 'uGrav') {
-      ctx.fillStyle = 'gold';
-      ctx.fillRect(drawX, obs.y, obs.width, (obs.height));
-      ctx.strokeRect(drawX, obs.y, obs.width, (obs.height));
-    } else if (obs.type === 'dGrav') {
-      ctx.fillStyle = 'blue';
-      ctx.fillRect(drawX, obs.y, obs.width, (obs.height+50));
-      ctx.strokeRect(drawX, obs.y, obs.width, (obs.height+50));
     } else {
       // Draw 1:1 right-angle triangles using paths
       ctx.beginPath();
@@ -180,7 +170,7 @@ function handleKeyDown(event){
   lastspacekey = spacekey;
   lastmenu = menu;
   // controls
-  if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'w') {
+  if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'w' || event.key === 'f' || event.key === 'j') {
     spacekey = true;
     if(menu && lastmenu){
       menu = false;
@@ -203,15 +193,6 @@ function handleKeyDown(event){
   if (event.key === '5') {
     selectedlevelnum = 5;
   }
-  if (event.key === '6') {
-    selectedlevelnum = 6;
-  }
-  if (event.key === '7') {
-    selectedlevelnum = 7;
-  }
-  if (event.key === '8') {
-    selectedlevelnum = 8;
-  }
 
   // exit etc
   if (event.key === 'e') {
@@ -228,7 +209,7 @@ function handleKeyDown(event){
 }
 function handleKeyUp(event){
   // controls
-  if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'w') {
+  if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'w' || event.key === 'f' || event.key === 'j') {
     spacekey = false;
   }
   if (event.key === 'n') {
@@ -263,28 +244,24 @@ function Logic(){
 
 if (gamemode === "wave"){
   if (spacekey || (macro && levelposition % 2 == 0)) {
-    playery -= (speed);
+    playery -= speed;
   }
   else{
-    playery += (speed);
+    playery += speed;
   }
 }
  //collisions
   if(playerx < 0){
     playerx = 0;
-    shipSpeed = 0;
   }
   if(playerx > screenh - playerheight){
     playerx = screenh - playerheight;
-    shipSpeed = 0;
   }
   if(playery < 0){
     playery = 0;
-    shipSpeed = 0;
   }
   if(playery > screenh - playerheight){
     playery = screenh - playerheight;
-    shipSpeed = 0;
   }
 }
 
@@ -373,41 +350,23 @@ async function Reset(){
   obstacles = [];
   trailpositions = [];
   levelposition = -10 * gridSize;
+  speed = 5;
+  gamemode = "wave";
   let selectedlevel;
   if(selectedlevelnum == 1){
     selectedlevel = await loadLevelFromFile("wavelevels/level1.txt");
-    speed = 5;
-    gamemode = "wave";
   }
   else if(selectedlevelnum == 2){
-    selectedlevel = await loadLevelFromFile("level2.txt");
-    speed = 5;
-    gamemode = "wave";
+    selectedlevel = await loadLevelFromFile("wavelevels/level2.txt");
   }
   else if(selectedlevelnum == 3){
-    selectedlevel = await loadLevelFromFile("level3.txt");
-    speed = 5;
-    gamemode = "wave";
+    selectedlevel = await loadLevelFromFile("wavelevels/level3.txt");
   }
   else if(selectedlevelnum == 4){
-    selectedlevel = await loadLevelFromFile("level4.txt");
-    speed = 5;
-    gamemode = "wave";
+    selectedlevel = await loadLevelFromFile("wavelevels/level4.txt");
   }
   else if(selectedlevelnum == 5){
-    selectedlevel = await loadLevelFromFile("level5.txt");
-    speed = 5;
-    gamemode = "wave";
-  }
-  else if(selectedlevelnum == 6){
-    selectedlevel = await loadLevelFromFile("level6.txt");
-    speed = 10;
-    gamemode = "wave";
-  }
-  else if(selectedlevelnum == 7){
-    selectedlevel = await loadLevelFromFile("level7.txt");
-    speed = 5;
-    gamemode = "wave";
+    selectedlevel = await loadLevelFromFile("wavelevels/level5.txt");
   }
 
   // use array to create obstacles 
@@ -417,10 +376,6 @@ async function Reset(){
         spawnObstacle(c * gridSize, r * gridSize, 'cube');
       } else if (selectedlevel[r][c] === 'e') { 
         spawnObstacle(c * gridSize, r * gridSize, 'end'); // end trigger
-      } else if (selectedlevel[r][c] === 'u') { 
-        spawnObstacle(c * gridSize, r * gridSize, 'uGrav'); // end trigger
-      } else if (selectedlevel[r][c] === 'd') { 
-        spawnObstacle(c * gridSize, r * gridSize, 'dGrav'); // end trigger
       } else if (selectedlevel[r][c] === 'L') { 
         spawnObstacle(c * gridSize, r * gridSize, 'tr_bl'); // Bottom-Left
       } else if (selectedlevel[r][c] === 'J') { 
