@@ -58,43 +58,61 @@ var upkey = false;
 var downkey = false;
 var leftkey = false;
 var rightkey = false;
+var leftspinkey = false;
+var rightspinkey = false;
 var lastupkey = false;
 var lastdownkey = false;
 var lastleftkey = false;
 var lastrightkey = false;
+var lastleftspinkey = false;
+var lastrightspinkey = false;
 
 function handleKeyDown(event){
   lastupkey = upkey;
   lastdownkey = downkey;
   lastleftkey = leftkey;
   lastrightkey = rightkey;
+  lastleftspinkey = leftspinkey;
+  lastrightspinkey = rightspinkey;
   // controls
-  if (event.key === 'ArrowUp') {
+  if (event.key === 'w') {
     upkey = true;
   }
-  if (event.key === 'ArrowDown') {
+  if (event.key === 's') {
     downkey = true;
   }
-  if (event.key === 'ArrowLeft') {
+  if (event.key === 'a') {
     leftkey = true;
   }
-  if (event.key === 'ArrowRight') {
+  if (event.key === 'd') {
     rightkey = true;
+  }
+  if (event.key === 'ArrowLeft') {
+    leftspinkey = true;
+  }
+  if (event.key === 'ArrowRight') {
+    rightspinkey = true;
   }
 }
 function handleKeyUp(event){
   // controls
-  if (event.key === 'ArrowUp') {
+  if (event.key === 'w') {
     upkey = false;
   }
-  if (event.key === 'ArrowDown') {
+  if (event.key === 's') {
     downkey = false;
   }
-  if (event.key === 'ArrowLeft') {
+  if (event.key === 'a') {
     leftkey = false;
   }
-  if (event.key === 'ArrowRight') {
+  if (event.key === 'd') {
     rightkey = false;
+  }
+  if (event.key === 'ArrowLeft') {
+    leftspinkey = false;
+  }
+  if (event.key === 'ArrowRight') {
+    rightspinkey = false;
   }
 }
 
@@ -115,9 +133,17 @@ function animate(t = 0){
         camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed;
     }
     if(leftkey){
-        camera.rotation.y += speed;
+        camera.position.z += Math.sin(camera.rotation.y + Math.PI) * speed;
+        camera.position.x += Math.cos(camera.rotation.y + Math.PI) * speed;
     }
     if(rightkey){
+        camera.position.z -= Math.sin(camera.rotation.y + Math.PI) * speed;
+        camera.position.x -= Math.cos(camera.rotation.y + Math.PI) * speed;
+    }
+    if(leftspinkey){
+        camera.rotation.y += speed;
+    }
+    if(rightspinkey){
         camera.rotation.y -= speed;
     }
     requestAnimationFrame(animate);
