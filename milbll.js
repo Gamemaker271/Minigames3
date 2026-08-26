@@ -10,7 +10,7 @@ const screenh = 300;
 
 var speed = 5;
 
-var gamemode = "wave";
+var dblock = true;
 
 const gridSize = 25;
 
@@ -95,13 +95,25 @@ function handleAndDrawObstacles() {
 
     if (boxCollision) {
       if (obs.type === 'cube' && !noclip) {
-        menu = true; // Instant crash for basic block
+        if(dblock && spacekey){
+            playery += speed * 2;
+        }else if(dblock){
+            playery -= speed * 2;
+        }else{
+            menu = true; // die
+        }
       } else if (obs.type === 'end') {
         menu = true; // win condition
       } else {
         // if inside cube, check if is also inside the triangle
         if (checkTriangleCollision(drawX, obs.y, obs.width, obs.type) && !noclip) {
-          menu = true;
+          if(dblock && spacekey){
+            playery += speed * 2;
+          }else if(dblock){
+            playery -= speed * 2;
+          }else{
+            menu = true;
+          }
         }
       }
     }
@@ -227,6 +239,14 @@ function handleKeyUp(event){
       macro = true;
     }
   }
+  if (event.key === 'd') {
+    if(dblock){
+      dblock = false;
+    }
+    else{
+      dblock = true;
+    }
+  }
 }
 
 function Logic(){
@@ -241,14 +261,12 @@ function Logic(){
   }
   playerx = playerxoffset;
 
-if (gamemode === "wave"){
   if (spacekey || (macro && levelposition % 2 == 0)) {
     playery -= speed;
   }
   else{
     playery += speed;
   }
-}
  //collisions
   if(playerx < 0){
     playerx = 0;
@@ -265,37 +283,43 @@ if (gamemode === "wave"){
 }
 
 function Draw(){
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   // menu screen
   if(menu){
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.font = '16px sans-serif';
-    ctx.fillText('Wave Game', 165, 16);
-    ctx.fillText('Press enter to play', 145, 32);
-    ctx.fillText('Press e to exit', 160, 48);
+    ctx.fillText('MILBLL', 165, 16);
 
-    ctx.fillText('Noclip', 170, 64);
+    ctx.fillText('Noclip', 150, 32);
     if(noclip){
       ctx.fillStyle = 'green';
-      ctx.fillText('ON', 220, 64);
+      ctx.fillText('ON', 200, 32);
     }else{
       ctx.fillStyle = 'red';
-      ctx.fillText('OFF', 220, 64);
+      ctx.fillText('OFF', 200, 32);
     }
-    ctx.fillStyle = 'black';
-    ctx.fillText('Macro', 170, 80);
+    ctx.fillStyle = 'white';
+    ctx.fillText('Macro', 150, 48);
     if(macro){
       ctx.fillStyle = 'green';
-      ctx.fillText('ON', 220, 80);
+      ctx.fillText('ON', 200, 48);
     }else{
       ctx.fillStyle = 'red';
-      ctx.fillText('OFF', 220, 80);
+      ctx.fillText('OFF', 200, 48);
     }
-    ctx.fillStyle = 'black';
-
-    ctx.fillText('Selected level:', 150, 96);
-    ctx.fillText(selectedlevelnum, 260, 96);
+    ctx.fillStyle = 'white';
+    ctx.fillText('D-Block', 145, 64);
+    if(dblock){
+      ctx.fillStyle = 'green';
+      ctx.fillText('ON', 205, 64);
+    }else{
+      ctx.fillStyle = 'red';
+      ctx.fillText('OFF', 205, 64);
+    }
+    ctx.fillStyle = 'white';
+    ctx.fillText('Selected level:', 95, 80);
+    ctx.fillText('MILBLLlife', 205, 80);
   }
   // game screen
   else{
@@ -306,10 +330,11 @@ function Draw(){
 
       // draw it
       if(trailpositions[i].y == 0 || trailpositions[i].y == screenh - playerheight){
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = 'white';
         let smallbox = gridSize * 0.65;
-        ctx.fillRect(trailpositions[i].x + (gridSize - smallbox) / 2, trailpositions[i].y + (gridSize - smallbox) / 2, smallbox, smallbox);
-
+        if(i > 1){
+            ctx.fillRect(trailpositions[i].x + (gridSize - smallbox) / 2, trailpositions[i].y + (gridSize - smallbox) / 2, smallbox, smallbox);
+        }
       }
       else{
         let centerX = trailpositions[i].x + gridSize / 2;
@@ -317,18 +342,21 @@ function Draw(){
         let radius = gridSize / 2;
 
         // draw the diamond shaped path
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY - radius); // Top vertex
-        ctx.lineTo(centerX + radius, centerY); // Right vertex
-        ctx.lineTo(centerX, centerY + radius); // Bottom vertex
-        ctx.lineTo(centerX - radius, centerY); // Left vertex
-        ctx.closePath();
+        if(i > 0){
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - radius); // Top vertex
+            ctx.lineTo(centerX + radius, centerY); // Right vertex
+            ctx.lineTo(centerX, centerY + radius); // Bottom vertex
+            ctx.lineTo(centerX - radius, centerY); // Left vertex
+            ctx.closePath();
 
-        ctx.fillStyle = 'red';
-        ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.fill();
+        }
       }
     }
     // draw player
+    /*
     if(noclip){
       ctx.fillStyle = 'grey';
     }else{
@@ -339,7 +367,49 @@ function Draw(){
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 2;
     ctx.strokeRect(playerx + playerwidth * 0.125, playery + playerheight * 0.125, playerwidth, playerheight);
-    //obstacles
+    */
+    // AI triangle sht
+    ctx.fillStyle = noclip ? 'grey' : 'lightgrey';
+    ctx.strokeStyle = 'darkgrey';
+    ctx.lineWidth = 2;
+
+    let x = playerx + playerwidth * 0.125;
+    let y = playery + playerheight * 0.125;
+    if(macro){
+        x -= 5;
+        y += 2;
+    }
+
+    // Target angle: UP (-45deg) vs DOWN (+45deg)
+    let angle = spacekey ? -Math.PI / 4 : Math.PI / 4;
+
+    // Calculate rotation center
+    let centerX = x + playerwidth / 2;
+    let centerY = y + playerheight / 2;
+
+    ctx.save(); // 1. Save state
+
+    // 2. Rotate around center point
+    if(!(playery == 0 || playery == screenh - playerheight)){
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle);
+        ctx.translate(-centerX, -centerY);
+    }
+
+    // 3. Define triangle path ONCE
+    ctx.beginPath();
+    ctx.moveTo(x + playerwidth, y + playerheight / 2); // Front tip
+    ctx.lineTo(x, y + 0);                               // Top back corner
+    ctx.lineTo(x, y - 0 + playerheight);                // Bottom back corner
+    ctx.closePath();
+
+    // 4. Fill and Stroke the single path
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore(); // 5. Cleanly restore canvas state
+
+    // Obstacles
     handleAndDrawObstacles();
   }
 }
@@ -349,8 +419,6 @@ async function Reset(){
   obstacles = [];
   trailpositions = [];
   levelposition = -10 * gridSize;
-  speed = 5;
-  gamemode = "wave";
   let selectedlevel = await loadLevelFromFile("wavelevels/milbll.txt");
 
   // use array to create obstacles 
