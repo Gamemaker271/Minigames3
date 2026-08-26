@@ -1,4 +1,4 @@
-const canvas = document.getElementById('waveCanvas');
+const canvas = document.getElementById('milbllCanvas');
 const ctx = canvas.getContext('2d');
 
 var loop;
@@ -22,7 +22,6 @@ const playerheight = gridSize * 0.75;
 
 var noclip = false;
 var macro = false;
-var selectedlevelnum = 2;
 
 var levelposition = 0;
 
@@ -352,22 +351,7 @@ async function Reset(){
   levelposition = -10 * gridSize;
   speed = 5;
   gamemode = "wave";
-  let selectedlevel;
-  if(selectedlevelnum == 1){
-    selectedlevel = await loadLevelFromFile("wavelevels/level1.txt");
-  }
-  else if(selectedlevelnum == 2){
-    selectedlevel = await loadLevelFromFile("wavelevels/level2.txt");
-  }
-  else if(selectedlevelnum == 3){
-    selectedlevel = await loadLevelFromFile("wavelevels/level3.txt");
-  }
-  else if(selectedlevelnum == 4){
-    selectedlevel = await loadLevelFromFile("wavelevels/level4.txt");
-  }
-  else if(selectedlevelnum == 5){
-    selectedlevel = await loadLevelFromFile("wavelevels/level5.txt");
-  }
+  let selectedlevel = await loadLevelFromFile("wavelevels/milbll.txt");
 
   // use array to create obstacles 
   for (let r = 0; r < selectedlevel.length; r++) {
