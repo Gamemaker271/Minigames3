@@ -104,18 +104,49 @@ function handleAndDrawObstacles() {
       drawY += mob1y * gridSize;
     }
 
-    let boxCollision = (
-      playerx < drawX + obs.width &&
-      playerx + playerwidth > drawX &&
-      playery < drawY + obs.height &&
-      playery + playerheight > drawY
-    );
+    let boxCollision = 0;
+    if(obs.type === 'mob'){
+      if(
+        playerx < drawX + mob1x * gridSize + obs.width &&
+        playerx + playerwidth > drawX + mob1x * gridSize &&
+        playery < drawY + mob1y * gridSize + obs.height &&
+        playery + playerheight > drawY + mob1y * gridSize
+      ){
+        if(
+          playerx < drawX + mob1x * gridSize + obs.width &&
+          playerx + playerwidth > drawX + mob1x * gridSize &&
+          playery < drawY + mob1y * gridSize + obs.height / 2 &&
+          playery + playerheight > drawY + mob1y * gridSize
+        ){
+          boxCollision = 1;
+        }else{
+          boxCollision = 2;
+        }
+      }
+    }else{
+      if(
+        playerx < drawX + obs.width &&
+        playerx + playerwidth > drawX &&
+        playery < drawY + obs.height &&
+        playery + playerheight > drawY
+      ){
+        boxCollision = 1;
+      }
+    }
 
-    if (boxCollision) {
-      if ((obs.type === 'cube' || obs.type === 'mob') && !noclip) {
+    if (boxCollision == 1 || boxCollision == 2) {
+      if (obs.type === 'cube' && !noclip) {
         if(dblock && spacekey){
             playery += speed * 2;
         }else if(dblock){
+            playery -= speed * 2;
+        }else{
+            menu = true; // die
+        }
+      }else if (obs.type == 'mob' && !noclip) {
+        if(dblock && boxCollision == 2){
+            playery += speed * 2;
+        }else if(dblock && boxCollision == 1){
             playery -= speed * 2;
         }else{
             menu = true; // die
@@ -137,7 +168,7 @@ function handleAndDrawObstacles() {
     }
 
     // Clean up off-screen items
-    if (drawX + obs.width < 0) {
+    if (drawX + obs.width < 0 && obs.type != 'mob') {
       obstacles.splice(i, 1);
     }
   }
@@ -269,9 +300,55 @@ function handleKeyUp(event){
 
 function Logic(){
   levelposition += speed;
-  if(levelposition > 500){
-    mob1x += 0.03;
+  if(levelposition > 680){
+    mob1x += 0.2;
   }
+  if(levelposition > 720 && levelposition < 740){
+    mob1y += 0.05;
+  }
+  if(levelposition > 760 && levelposition < 820){
+    mob1y -= 0.1;
+  }
+  if(levelposition > 820 && levelposition < 1000){
+    mob1y += 0.025;
+  }
+  if(levelposition > 1000 && levelposition < 1100){
+    mob1y -= 0.05;
+  }
+  if(levelposition > 1100 && levelposition < 1200){
+    mob1y -= 0.1;
+  }
+  if(levelposition > 1200 && levelposition < 1500){
+    mob1y += 0.05;
+  }
+  if(levelposition > 1500 && levelposition < 1550){
+    mob1y += 0.15;
+  }
+  if(levelposition > 1550 && levelposition < 1650){
+    mob1y -= 0.1;
+  }
+  if(levelposition > 1650 && levelposition < 1800){
+    mob1y += 0.05;
+  }
+  if(levelposition > 1800 && levelposition < 1900){
+    mob1y -= 0.1;
+  }
+  if(levelposition > 1900 && levelposition < 2000){
+    mob1y -= 0.05;
+  }
+  if(levelposition > 2000 && levelposition < 2100){
+    mob1y += 0.05;
+  }
+  if(levelposition > 2100 && levelposition < 2150){
+    mob1y -= 0.15;
+  }
+  if(levelposition > 2150 && levelposition < 2300){
+    mob1y += 0.075;
+  }
+  if(levelposition > 2300 && levelposition < 2400){
+    mob1y -= 0.05;
+  }
+  
 
   // trail stuff
   // Save current position to the start of array
@@ -440,6 +517,8 @@ async function Reset(){
   obstacles = [];
   trailpositions = [];
   levelposition = -10 * gridSize;
+  mob1x = 0;
+  mob1y = 0;
   let selectedlevel = await loadLevelFromFile("wavelevels/milbll.txt");
 
   // use array to create obstacles 
