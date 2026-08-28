@@ -13,7 +13,7 @@ renderer.setSize(w, h);
 const fov = 60;
 const aspect = w / h;
 const near = 0.1;
-const far = 10;
+const far = 50;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
 const scene = new THREE.Scene();
@@ -52,7 +52,8 @@ scene.add(floorMesh);
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
-const speed = 0.03;
+const speed = 0.05;
+const rotSpeed = 0.03;
 
 var upkey = false;
 var downkey = false;
@@ -119,9 +120,11 @@ function handleKeyUp(event){
 camera.position.z = 2;
 
 cubeMesh.position.x = 2;
-floorMesh.position.y = -1;
-floorMesh.scale.x = 10;
-floorMesh.scale.z = 10;
+cubeMesh.position.z = 0;
+floorMesh.position.y = -0.55;
+floorMesh.scale.x = 20;
+floorMesh.scale.y = 0.1;
+floorMesh.scale.z = 20;
 
 function animate(t = 0){
     if(upkey){
@@ -133,18 +136,18 @@ function animate(t = 0){
         camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed;
     }
     if(leftkey){
-        camera.position.z += Math.sin(camera.rotation.y + Math.PI) * speed;
-        camera.position.x += Math.cos(camera.rotation.y + Math.PI) * speed;
+        camera.position.z += Math.sin(camera.rotation.y) * speed;
+        camera.position.x -= Math.cos(camera.rotation.y) * speed;
     }
     if(rightkey){
-        camera.position.z -= Math.sin(camera.rotation.y + Math.PI) * speed;
-        camera.position.x -= Math.cos(camera.rotation.y + Math.PI) * speed;
+        camera.position.z -= Math.sin(camera.rotation.y) * speed;
+        camera.position.x += Math.cos(camera.rotation.y) * speed;
     }
     if(leftspinkey){
-        camera.rotation.y += speed;
+        camera.rotation.y += rotSpeed;
     }
     if(rightspinkey){
-        camera.rotation.y -= speed;
+        camera.rotation.y -= rotSpeed;
     }
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
