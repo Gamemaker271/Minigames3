@@ -36,6 +36,8 @@ var obstacleMode = 0; // 0 blocks, 1 triangles
 let obstacles = [];
 const OBSTACLE_SIZE = gridSize;
 
+let effects = [];
+
 function spawnObstacle(_x, _y, type = 'cube') {
   obstacles.push({
     x: _x,
@@ -227,8 +229,6 @@ var spacekey = false;
 var lastspacekey = false;
 
 function handleKeyDown(event){
-  lastspacekey = spacekey;
-  lastmenu = menu;
   // controls
   if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'w' || event.key === 'f' || event.key === 'j') {
     spacekey = true;
@@ -298,57 +298,65 @@ function handleKeyUp(event){
   }
 }
 
+function dashorb(){
+  for (let i = 0; i < effects.length; i++) {
+    if(effects[i].size > 0){
+      ctx.fillStyle = 'purple';
+      ctx.beginPath();
+      ctx.arc(effects[i].x, effects[i].y, effects[i].size * 0.9, 0, 2 * Math.PI);
+      ctx.fill();
+      effects[i].size -= 2;
+      //effects[i].x -= speed;
+    }else{
+      effects.splice(i, 1);;
+    }
+  }
+  for (let i = 0; i < effects.length; i++) {
+    ctx.strokeStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(effects[i].x, effects[i].y, effects[i].size * 1.1, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+}
+function spawneffect(){
+  effects.push({x: playerx + 8, y: playery + 8, size: 30});
+}
+
 function Logic(){
   levelposition += speed;
   if(levelposition > 680){
     mob1x += 0.2;
-  }
-  if(levelposition > 720 && levelposition < 740){
+  } if(levelposition > 720 && levelposition < 740){
     mob1y += 0.05;
-  }
-  if(levelposition > 760 && levelposition < 820){
+  } if(levelposition > 760 && levelposition < 820){
     mob1y -= 0.1;
-  }
-  if(levelposition > 820 && levelposition < 1000){
+  } if(levelposition > 820 && levelposition < 1000){
     mob1y += 0.025;
-  }
-  if(levelposition > 1000 && levelposition < 1100){
+  } if(levelposition > 1000 && levelposition < 1100){
     mob1y -= 0.05;
-  }
-  if(levelposition > 1100 && levelposition < 1200){
+  } if(levelposition > 1100 && levelposition < 1200){
     mob1y -= 0.1;
-  }
-  if(levelposition > 1200 && levelposition < 1500){
+  } if(levelposition > 1200 && levelposition < 1500){
     mob1y += 0.05;
-  }
-  if(levelposition > 1500 && levelposition < 1550){
+  } if(levelposition > 1500 && levelposition < 1550){
     mob1y += 0.15;
-  }
-  if(levelposition > 1550 && levelposition < 1650){
+  } if(levelposition > 1550 && levelposition < 1650){
     mob1y -= 0.1;
-  }
-  if(levelposition > 1650 && levelposition < 1800){
+  } if(levelposition > 1650 && levelposition < 1800){
     mob1y += 0.05;
-  }
-  if(levelposition > 1800 && levelposition < 1900){
+  } if(levelposition > 1800 && levelposition < 1900){
     mob1y -= 0.1;
-  }
-  if(levelposition > 1900 && levelposition < 2000){
+  } if(levelposition > 1900 && levelposition < 2000){
     mob1y -= 0.05;
-  }
-  if(levelposition > 2000 && levelposition < 2100){
+  } if(levelposition > 2000 && levelposition < 2100){
     mob1y += 0.05;
-  }
-  if(levelposition > 2100 && levelposition < 2150){
+  } if(levelposition > 2100 && levelposition < 2150){
     mob1y -= 0.15;
-  }
-  if(levelposition > 2150 && levelposition < 2300){
+  } if(levelposition > 2150 && levelposition < 2300){
     mob1y += 0.075;
-  }
-  if(levelposition > 2300 && levelposition < 2400){
+  } if(levelposition > 2300 && levelposition < 2400){
     mob1y -= 0.05;
   }
-  
 
   // trail stuff
   // Save current position to the start of array
@@ -364,6 +372,10 @@ function Logic(){
   }
   else{
     playery += speed;
+  }
+
+  if( ((spacekey && !lastspacekey) || macro) && levelposition > 680 ){
+    spawneffect();
   }
  //collisions
   if(playerx < 0){
@@ -421,6 +433,8 @@ function Draw(){
   }
   // game screen
   else{
+    dashorb();
+
     // draw trail
     for (let i = 0; i < trailpositions.length; i++) {
       // move trail piece to the left
@@ -455,11 +469,7 @@ function Draw(){
     }
     // draw player
     /*
-    if(noclip){
-      ctx.fillStyle = 'grey';
-    }else{
-      ctx.fillStyle = 'blue';
-    }
+    ctx.fillStyle = noclip ? 'grey' : 'blue';
     ctx.fillRect(playerx + playerwidth * 0.125, playery + playerheight * 0.125, playerwidth, playerheight);
     //draw player border
     ctx.strokeStyle = 'black';
@@ -516,6 +526,7 @@ async function Reset(){
   playery = screenh - playerheight;
   obstacles = [];
   trailpositions = [];
+  effects = [];
   levelposition = -10 * gridSize;
   mob1x = 0;
   mob1y = 0;
@@ -544,6 +555,8 @@ async function Reset(){
 }
 
 function Update() {
+  lastspacekey = spacekey;
+  lastmenu = menu;
   Logic();
   Draw();
 }
