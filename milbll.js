@@ -1,6 +1,9 @@
 const canvas = document.getElementById('milbllCanvas');
 const ctx = canvas.getContext('2d');
 
+const img = new Image();
+img.src = "emptychildface.png";
+
 var loop;
 var menu = true;
 var lastmenu = true;
@@ -308,7 +311,7 @@ function dashorb(){
       effects[i].size -= 2;
       //effects[i].x -= speed;
     }else{
-      effects.splice(i, 1);;
+      effects.splice(i, 1);
     }
   }
   for (let i = 0; i < effects.length; i++) {
@@ -374,7 +377,7 @@ function Logic(){
     playery += speed;
   }
 
-  if( ((spacekey && !lastspacekey) || macro) && levelposition > 680 ){
+  if( ((spacekey) || macro)){
     spawneffect();
   }
  //collisions
@@ -519,6 +522,11 @@ function Draw(){
 
     // Obstacles
     handleAndDrawObstacles();
+    let w = 125;
+    let h = 125;
+    if(levelposition > 680){
+      ctx.drawImage(img, screenw - w, screenh / 2 - h / 2, w, h);
+    }
   }
 }
 
