@@ -12,7 +12,12 @@ renderer.setSize(w, h);
 /*----- Textures -----*/
 const textureLoader = new THREE.TextureLoader();
 
-const cubeTexture = textureLoader.load('Images/emptychildface.png');
+const cubeTexture = textureLoader.load('Textures/birdwall.png');
+cubeTexture.magFilter = THREE.NearestFilter;
+cubeTexture.minFilter = THREE.NearestFilter;
+const wallTexture = textureLoader.load('Textures/wall.png');
+wallTexture.magFilter = THREE.NearestFilter;
+wallTexture.minFilter = THREE.NearestFilter;
 
 /*----- Objects -----*/
 const fov = 60;
@@ -22,6 +27,10 @@ const far = 50;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
 const scene = new THREE.Scene();
+
+//light
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff);
+scene.add(hemiLight);
 
 // floor
 const floorGeo = new THREE.BoxGeometry(1,1,1);
@@ -48,15 +57,42 @@ const cubeMat = new THREE.MeshStandardMaterial({
 const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
 scene.add(cubeMesh);
 
+// map
+const map = [
+  ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','#','_','#'],
+  ['#','_','_','_','#','_','_','_','_','_','_','_','_','#','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','#','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','#','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','#','_','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#']
+];
+
 // walls
 const wallGeo = new THREE.BoxGeometry(1,1,1);
 const wallMat = new THREE.MeshStandardMaterial({
-    color: 0x666666
+    //color: 0x666666,
+    map: wallTexture
 });
-var walls = [
-  {x: 2, y: 1},
-  {x: 4, y: 3}
-];
+
+var walls = [];
+
+for (let i = 0; i < map.length; i++){
+  for (let j = 0; j < map[i].length; j++){
+    if(map[i][j] == '#'){
+      walls.push({x: i, y: j});
+    }
+  }
+}
 
 for (let i = 0; i < walls.length; i++){
   let wallMesh = new THREE.Mesh(wallGeo, wallMat);
@@ -65,9 +101,7 @@ for (let i = 0; i < walls.length; i++){
   wallMesh.position.z = walls[i].y;
 }
 
-//light
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff);
-scene.add(hemiLight);
+
 
 const speed = 0.05;
 const rotSpeed = 0.03;
