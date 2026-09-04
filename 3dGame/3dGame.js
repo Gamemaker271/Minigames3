@@ -1,5 +1,4 @@
 const canvas = document.getElementById('3dGameCanvas');
-//const ctx = canvas.getContext('2d');
 
 import * as THREE from "three";
 
@@ -10,6 +9,12 @@ const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias : true });
 renderer.setSize(w, h);
 //document.body.appendChild(renderer.domElement);
 
+/*----- Textures -----*/
+const textureLoader = new THREE.TextureLoader();
+
+const cubeTexture = textureLoader.load('Images/emptychildface.png');
+
+/*----- Objects -----*/
 const fov = 60;
 const aspect = w / h;
 const near = 0.1;
@@ -17,14 +22,6 @@ const far = 50;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
 const scene = new THREE.Scene();
-
-//cube
-const cubeGeo = new THREE.BoxGeometry(1,1,1);
-const cubeMat = new THREE.MeshStandardMaterial({
-    color: 0xff0000
-});
-const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
-scene.add(cubeMesh);
 
 // floor
 const floorGeo = new THREE.BoxGeometry(1,1,1);
@@ -41,6 +38,32 @@ const ceilingMat = new THREE.MeshStandardMaterial({
 });
 const ceilingMesh = new THREE.Mesh(ceilingGeo, ceilingMat);
 scene.add(ceilingMesh);
+
+//cube
+const cubeGeo = new THREE.BoxGeometry(1,1,1);
+const cubeMat = new THREE.MeshStandardMaterial({
+    //color: 0xff0000,
+    map: cubeTexture
+});
+const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
+scene.add(cubeMesh);
+
+// walls
+const wallGeo = new THREE.BoxGeometry(1,1,1);
+const wallMat = new THREE.MeshStandardMaterial({
+    color: 0x666666
+});
+var walls = [
+  {x: 2, y: 1},
+  {x: 4, y: 3}
+];
+
+for (let i = 0; i < walls.length; i++){
+  let wallMesh = new THREE.Mesh(wallGeo, wallMat);
+  scene.add(wallMesh);
+  wallMesh.position.x = walls[i].x;
+  wallMesh.position.z = walls[i].y;
+}
 
 //light
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff);
@@ -113,12 +136,12 @@ function handleKeyUp(event){
 
 camera.position.z = 2;
 
-cubeMesh.position.x = 0;
-cubeMesh.position.y = 0;
+//floor
 floorMesh.position.y = -0.55;
 floorMesh.scale.x = 64;
 floorMesh.scale.y = 0.1;
 floorMesh.scale.z = 64;
+//ceiling
 ceilingMesh.position.y = 0.55;
 ceilingMesh.scale.x = 64;
 ceilingMesh.scale.y = 0.1;

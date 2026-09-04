@@ -2,7 +2,7 @@ const canvas = document.getElementById('milbllCanvas');
 const ctx = canvas.getContext('2d');
 
 const img = new Image();
-img.src = "emptychildface.png";
+img.src = "Images/emptychildface.png";
 
 var loop;
 var menu = true;
