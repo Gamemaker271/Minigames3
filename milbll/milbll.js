@@ -538,7 +538,7 @@ async function Reset(){
   levelposition = -10 * gridSize;
   mob1x = 0;
   mob1y = 0;
-  let selectedlevel = await loadLevelFromFile("wavelevels/milbll.txt");
+  let selectedlevel = await loadLevelFromFile("milbll.txt");
 
   // use array to create obstacles 
   for (let r = 0; r < selectedlevel.length; r++) {

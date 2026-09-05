@@ -12,18 +12,18 @@ renderer.setSize(w, h);
 /*----- Textures -----*/
 const textureLoader = new THREE.TextureLoader();
 
-const cubeTexture = textureLoader.load('Textures/birdwall.png');
+var cubeTexture = textureLoader.load('Textures/birdwall.png');
 cubeTexture.magFilter = THREE.NearestFilter;
 cubeTexture.minFilter = THREE.NearestFilter;
-const wallTexture = textureLoader.load('Textures/wall.png');
+var wallTexture = textureLoader.load('Textures/wall.png');
 wallTexture.magFilter = THREE.NearestFilter;
 wallTexture.minFilter = THREE.NearestFilter;
 
 /*----- Objects -----*/
 const fov = 60;
 const aspect = w / h;
-const near = 0.1;
-const far = 50;
+const near = 0.01; // 0.1
+const far = 30; // 50
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
 const scene = new THREE.Scene();
@@ -60,20 +60,20 @@ scene.add(cubeMesh);
 // map
 const map = [
   ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','#','_','#'],
-  ['#','_','_','_','#','_','_','_','_','_','_','_','_','#','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','#','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','#','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','#','_','#'],
-  ['#','_','_','_','_','_','_','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','#','_','_','#','_','#','_','_','_','#'],
+  ['#','_','_','#','_','_','#','_','_','_','_','#','_','_','_','#'],
+  ['#','_','_','#','_','_','#','_','_','#','_','_','_','_','_','#'],
+  ['#','_','_','_','_','_','#','#','#','#','_','#','#','_','#','#'],
+  ['#','#','#','#','_','_','#','_','_','_','_','#','_','_','_','#'],
+  ['#','_','_','#','_','_','#','_','_','_','_','#','#','_','#','#'],
+  ['#','_','_','_','_','_','_','_','#','#','_','_','_','_','_','#'],
+  ['#','_','_','#','_','_','#','_','a','_','_','#','_','_','_','#'],
+  ['#','#','#','#','_','_','#','_','_','_','_','#','#','_','#','#'],
+  ['#','_','_','_','_','_','_','_','_','_','_','_','#','_','_','#'],
+  ['#','_','_','#','_','_','#','#','_','#','#','_','#','_','_','#'],
+  ['#','_','_','#','_','_','#','_','_','_','#','_','_','_','_','#'],
+  ['#','_','_','_','_','_','#','_','_','_','_','_','_','_','_','#'],
+  ['#','_','_','#','_','_','#','_','_','_','#','_','#','#','#','#'],
   ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#']
 ];
 
@@ -85,23 +85,46 @@ const wallMat = new THREE.MeshStandardMaterial({
 });
 
 var walls = [];
-
+// add coords from map to array
 for (let i = 0; i < map.length; i++){
   for (let j = 0; j < map[i].length; j++){
     if(map[i][j] == '#'){
-      walls.push({x: i, y: j});
+      walls.push({x: j - 7.5, y: i - 7.5, type: 0});
+    }else if(map[i][j] == 'a'){
+      walls.push({x: j - 7.5, y: i - 7.5, type: 1});
     }
   }
 }
-
+// add walls to scene
 for (let i = 0; i < walls.length; i++){
-  let wallMesh = new THREE.Mesh(wallGeo, wallMat);
+  let tempMat = wallMat.clone();
+  let wallMesh = new THREE.Mesh(wallGeo, tempMat);
+  if(walls[i].type == 0){
+    wallTexture = textureLoader.load('Textures/wall.png');
+  } else if (walls[i].type == 1){
+    wallTexture = textureLoader.load('Textures/birdwall.png');
+  } else {
+    wallTexture = textureLoader.load('Textures/wall.png');
+  }
+
+  wallTexture.magFilter = THREE.NearestFilter;
+  wallTexture.minFilter = THREE.NearestFilter;
+
+  wallMesh.material.map = wallTexture;
+
   scene.add(wallMesh);
   wallMesh.position.x = walls[i].x;
   wallMesh.position.z = walls[i].y;
 }
+//walls.push({x: 0.5, y: 0.5, type: 1});
 
-
+// gun
+const gunTexture = new THREE.TextureLoader().load( "Textures/pistol.png" );
+const gunMaterial = new THREE.SpriteMaterial( { map: gunTexture, color: 0xffffff, sizeAttenuation: false } );
+const gunShootTexture = new THREE.TextureLoader().load( "Textures/pistol-shoot.png" );
+const gunShootMaterial = new THREE.SpriteMaterial( { map: gunShootTexture, color: 0xffffff, sizeAttenuation: false } );
+const gunSprite = new THREE.Sprite( gunMaterial );
+scene.add( gunSprite );
 
 const speed = 0.05;
 const rotSpeed = 0.03;
@@ -112,12 +135,14 @@ var leftkey = false;
 var rightkey = false;
 var leftspinkey = false;
 var rightspinkey = false;
+var firekey = false;
 var lastupkey = false;
 var lastdownkey = false;
 var lastleftkey = false;
 var lastrightkey = false;
 var lastleftspinkey = false;
 var lastrightspinkey = false;
+var lastfirekey = false;
 
 function handleKeyDown(event){
   lastupkey = upkey;
@@ -126,6 +151,7 @@ function handleKeyDown(event){
   lastrightkey = rightkey;
   lastleftspinkey = leftspinkey;
   lastrightspinkey = rightspinkey;
+  lastfirekey = firekey;
   // controls
   if (event.key === 'w') {
     upkey = true;
@@ -145,6 +171,17 @@ function handleKeyDown(event){
   if (event.key === 'ArrowRight') {
     rightspinkey = true;
   }
+  if (event.key === 'Shift') {
+    firekey = true;
+  }
+  /*if(
+    event.ctrlKey && event.key.toLowerCase() === 'w' || 
+    event.ctrlKey && event.key.toLowerCase() === 's' || 
+    event.ctrlKey && event.key.toLowerCase() === 'a' || 
+    event.ctrlKey && event.key.toLowerCase() === 'd'
+  ){
+    event.preventDefault();
+  }*/
 }
 function handleKeyUp(event){
   // controls
@@ -166,46 +203,115 @@ function handleKeyUp(event){
   if (event.key === 'ArrowRight') {
     rightspinkey = false;
   }
+  if (event.key === 'Shift') {
+    firekey = false;
+  }
 }
 
-camera.position.z = 2;
+camera.position.x = 0.5;
+camera.position.z = 2.5;
+
+cubeMesh.position.x = 0.5;
+cubeMesh.position.z = 0.5;
 
 //floor
 floorMesh.position.y = -0.55;
-floorMesh.scale.x = 64;
+floorMesh.scale.x = 16;
 floorMesh.scale.y = 0.1;
-floorMesh.scale.z = 64;
+floorMesh.scale.z = 16;
 //ceiling
 ceilingMesh.position.y = 0.55;
-ceilingMesh.scale.x = 64;
+ceilingMesh.scale.x = 16;
 ceilingMesh.scale.y = 0.1;
-ceilingMesh.scale.z = 64;
+ceilingMesh.scale.z = 16;
+
+function boxCollision(px, py, boxMinX, boxMinY, boxMaxX, boxMaxY) {
+    return px >= boxMinX && px <= boxMaxX &&
+           py >= boxMinY && py <= boxMaxY;
+}
 
 function animate(){
-    if(upkey){
-        camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed;
-        camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed;
-    }
-    if(downkey){
+  if(upkey){
+    camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
         camera.position.z -= Math.cos(camera.rotation.y + Math.PI) * speed;
+      }
+    }
+    camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
         camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed;
+      }
     }
-    if(leftkey){
-        camera.position.z += Math.sin(camera.rotation.y) * speed;
-        camera.position.x -= Math.cos(camera.rotation.y) * speed;
+  }
+  if(downkey){
+    camera.position.z -= Math.cos(camera.rotation.y + Math.PI) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
+        camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed;
+      }
     }
-    if(rightkey){
+    camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
+        camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed;
+      }
+    }
+  }
+  if(leftkey){
+    camera.position.z += Math.sin(camera.rotation.y) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
         camera.position.z -= Math.sin(camera.rotation.y) * speed;
+      }
+    }
+    camera.position.x -= Math.cos(camera.rotation.y) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
         camera.position.x += Math.cos(camera.rotation.y) * speed;
+      }
     }
-    if(leftspinkey){
-        camera.rotation.y += rotSpeed;
+  }
+  if(rightkey){
+    camera.position.z -= Math.sin(camera.rotation.y) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
+        camera.position.z += Math.sin(camera.rotation.y) * speed;
+      }
     }
-    if(rightspinkey){
-        camera.rotation.y -= rotSpeed;
+    camera.position.x += Math.cos(camera.rotation.y) * speed;
+    for(let i = 0; i < walls.length; i++){
+      if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
+        camera.position.x -= Math.cos(camera.rotation.y) * speed;
+      }
     }
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+  }
+  if(leftspinkey){
+    camera.rotation.y += rotSpeed;
+  }
+  if(rightspinkey){
+    camera.rotation.y -= rotSpeed;
+  }
+  if(firekey && !lastfirekey){
+    gunSprite.material = gunShootMaterial;
+  }else{
+    gunSprite.material = gunMaterial;
+  }
+
+  camera.position.x += Math.sin(camera.rotation.y) * 0.02;
+  camera.position.z += Math.cos(camera.rotation.y) * 0.02;
+
+  // gun
+  gunSprite.position.x = camera.position.x - Math.sin(camera.rotation.y) * 0.02;
+  gunSprite.position.z = camera.position.z - Math.cos(camera.rotation.y) * 0.02;
+  gunSprite.position.y = -0.0016;
+
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+
+  camera.position.x -= Math.sin(camera.rotation.y) * 0.02;
+  camera.position.z -= Math.cos(camera.rotation.y) * 0.02;
 }
 animate();
 window.addEventListener('keydown', handleKeyDown);
