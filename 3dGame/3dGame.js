@@ -12,7 +12,7 @@ renderer.setSize(w, h);
 /*----- Textures -----*/
 const textureLoader = new THREE.TextureLoader();
 
-var cubeTexture = textureLoader.load('Textures/birdwall3.png');
+var cubeTexture = textureLoader.load('Textures/birdwall2.png');
 cubeTexture.magFilter = THREE.NearestFilter;
 cubeTexture.minFilter = THREE.NearestFilter;
 var wallTexture = textureLoader.load('Textures/wall.png');
@@ -102,7 +102,7 @@ for (let i = 0; i < walls.length; i++){
   if(walls[i].type == 0){
     wallTexture = textureLoader.load('Textures/wall.png');
   } else if (walls[i].type == 1){
-    wallTexture = textureLoader.load('Textures/birdwall3.png');
+    wallTexture = textureLoader.load('Textures/birdwall2.png');
   } else {
     wallTexture = textureLoader.load('Textures/wall.png');
   }
