@@ -126,8 +126,8 @@ const gunShootMaterial = new THREE.SpriteMaterial( { map: gunShootTexture, color
 const gunSprite = new THREE.Sprite( gunMaterial );
 scene.add( gunSprite );
 
-const speed = 0.05;
-const rotSpeed = 0.03;
+const speed = 2.5;
+const rotSpeed = 1.5;
 
 var upkey = false;
 var downkey = false;
@@ -230,68 +230,82 @@ function boxCollision(px, py, boxMinX, boxMinY, boxMaxX, boxMaxY) {
            py >= boxMinY && py <= boxMaxY;
 }
 
+const clock = new THREE.Clock();
+
+const tick = () => {
+  // Capture it ONCE at the start of the frame loop
+  const deltaTime = clock.getDelta(); 
+
+  // Pass that single variable to your objects or mixers
+  
+
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(tick);
+};
+
 function animate(){
+  var dt = clock.getDelta();
   if(upkey){
-    camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed;
+    camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.z -= Math.cos(camera.rotation.y + Math.PI) * speed;
+        camera.position.z -= Math.cos(camera.rotation.y + Math.PI) * speed * dt;
       }
     }
-    camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed;
+    camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed;
+        camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed * dt;
       }
     }
   }
   if(downkey){
-    camera.position.z -= Math.cos(camera.rotation.y + Math.PI) * speed;
+    camera.position.z -= Math.cos(camera.rotation.y + Math.PI) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed;
+        camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed * dt;
       }
     }
-    camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed;
+    camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed;
+        camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed * dt;
       }
     }
   }
   if(leftkey){
-    camera.position.z += Math.sin(camera.rotation.y) * speed;
+    camera.position.z += Math.sin(camera.rotation.y) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.z -= Math.sin(camera.rotation.y) * speed;
+        camera.position.z -= Math.sin(camera.rotation.y) * speed * dt;
       }
     }
-    camera.position.x -= Math.cos(camera.rotation.y) * speed;
+    camera.position.x -= Math.cos(camera.rotation.y) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.x += Math.cos(camera.rotation.y) * speed;
+        camera.position.x += Math.cos(camera.rotation.y) * speed * dt;
       }
     }
   }
   if(rightkey){
-    camera.position.z -= Math.sin(camera.rotation.y) * speed;
+    camera.position.z -= Math.sin(camera.rotation.y) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.z += Math.sin(camera.rotation.y) * speed;
+        camera.position.z += Math.sin(camera.rotation.y) * speed * dt;
       }
     }
-    camera.position.x += Math.cos(camera.rotation.y) * speed;
+    camera.position.x += Math.cos(camera.rotation.y) * speed * dt;
     for(let i = 0; i < walls.length; i++){
       if(boxCollision(camera.position.x + 0.5, camera.position.z + 0.5, walls[i].x, walls[i].y, walls[i].x + 1, walls[i].y + 1)){
-        camera.position.x -= Math.cos(camera.rotation.y) * speed;
+        camera.position.x -= Math.cos(camera.rotation.y) * speed * dt;
       }
     }
   }
   if(leftspinkey){
-    camera.rotation.y += rotSpeed;
+    camera.rotation.y += rotSpeed * dt;
   }
   if(rightspinkey){
-    camera.rotation.y -= rotSpeed;
+    camera.rotation.y -= rotSpeed * dt;
   }
   if(firekey && !lastfirekey){
     gunSprite.material = gunShootMaterial;
