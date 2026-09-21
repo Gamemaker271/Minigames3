@@ -126,6 +126,14 @@ const gunShootMaterial = new THREE.SpriteMaterial( { map: gunShootTexture, color
 const gunSprite = new THREE.Sprite( gunMaterial );
 scene.add( gunSprite );
 
+// enemy
+const enemyTexture = new THREE.TextureLoader().load( "Textures/guard.png" );
+enemyTexture.magFilter = THREE.NearestFilter;
+enemyTexture.minFilter = THREE.NearestFilter;
+const enemyMaterial = new THREE.SpriteMaterial( { map: enemyTexture, color: 0xcccccc } );
+const enemySprite = new THREE.Sprite( enemyMaterial );
+scene.add( enemySprite );
+
 const speed = 2.5;
 const rotSpeed = 1.5;
 
@@ -224,6 +232,9 @@ ceilingMesh.position.y = 0.55;
 ceilingMesh.scale.x = 16;
 ceilingMesh.scale.y = 0.1;
 ceilingMesh.scale.z = 16;
+
+enemySprite.position.x = 1.5;
+enemySprite.position.z = 1.5;
 
 function boxCollision(px, py, boxMinX, boxMinY, boxMaxX, boxMaxY) {
     return px >= boxMinX && px <= boxMaxX &&
