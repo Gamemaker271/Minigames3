@@ -116,7 +116,6 @@ for (let i = 0; i < walls.length; i++){
   wallMesh.position.x = walls[i].x;
   wallMesh.position.z = walls[i].y;
 }
-//walls.push({x: 0.5, y: 0.5, type: 1});
 
 // gun
 const gunTexture = new THREE.TextureLoader().load( "Textures/pistol.png" );
@@ -127,12 +126,34 @@ const gunSprite = new THREE.Sprite( gunMaterial );
 scene.add( gunSprite );
 
 // enemy
-const enemyTexture = new THREE.TextureLoader().load( "Textures/guard.png" );
+var enemyTexture = new THREE.TextureLoader().load( "Textures/guard.png" );
 enemyTexture.magFilter = THREE.NearestFilter;
 enemyTexture.minFilter = THREE.NearestFilter;
-const enemyMaterial = new THREE.SpriteMaterial( { map: enemyTexture, color: 0xcccccc } );
-const enemySprite = new THREE.Sprite( enemyMaterial );
-scene.add( enemySprite );
+var enemyMaterial = new THREE.SpriteMaterial( { map: enemyTexture, color: 0xcccccc } );
+var enemySprite = new THREE.Sprite( enemyMaterial );
+
+var enemies = [
+  {type: 0, x: 1.5, y: 1.5, health: 100},
+  {type: 0, x: -0.5, y: -2.5, health: 100},
+  {type: 0, x: -0.5, y: -4.5, health: 100},
+];
+// add them to scene
+for (let i = 0; i < enemies.length; i++){
+  let tempMat = enemyMaterial.clone();
+  let enemySprite = new THREE.Sprite( enemyMaterial );
+  if(enemies[i].type == 0){
+    enemyTexture = textureLoader.load('Textures/guard.png');
+  }
+
+  enemyTexture.magFilter = THREE.NearestFilter;
+  enemyTexture.minFilter = THREE.NearestFilter;
+
+  enemySprite.material.map = enemyTexture;
+
+  scene.add(enemySprite);
+  enemySprite.position.x = enemies[i].x;
+  enemySprite.position.z = enemies[i].y;
+}
 
 const speed = 2.5;
 const rotSpeed = 1.5;
