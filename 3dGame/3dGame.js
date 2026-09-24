@@ -136,6 +136,13 @@ var enemies = [
   {type: 0, x: 1.5, y: 1.5, health: 100},
   {type: 0, x: -0.5, y: -2.5, health: 100},
   {type: 0, x: -0.5, y: -4.5, health: 100},
+  {type: 0, x: 4.5, y: -6.5, health: 100},
+  {type: 0, x: 6.5, y: -2.5, health: 100},
+  {type: 0, x: 6.5, y: 4.5, health: 100},
+  {type: 0, x: -6.5, y: 6.5, health: 100},
+  {type: 0, x: -6.5, y: 3.5, health: 100},
+  {type: 0, x: -6.5, y: -0.5, health: 100},
+  {type: 0, x: -6.5, y: -5.5, health: 100},
 ];
 // add them to scene
 for (let i = 0; i < enemies.length; i++){
