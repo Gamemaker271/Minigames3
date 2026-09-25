@@ -157,6 +157,8 @@ for (let i = 0; i < enemies.length; i++){
 
   enemySprite.material.map = enemyTexture;
 
+  enemySprite.name = "abc"
+
   scene.add(enemySprite);
   enemySprite.position.x = enemies[i].x;
   enemySprite.position.z = enemies[i].y;
@@ -269,6 +271,29 @@ function boxCollision(px, py, boxMinX, boxMinY, boxMaxX, boxMaxY) {
            py >= boxMinY && py <= boxMaxY;
 }
 
+const raycaster = new THREE.Raycaster();
+function castRay() {
+    raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+    
+    // 2. Calculate objects intersecting the picking ray
+    // (It is best practice to pass an array of target objects rather than the whole scene)
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    
+    if (intersects.length > 0) {
+        // The first element is the closest object hit
+        const closestHit = intersects[1].object;
+        if(firekey){
+         if(closestHit.name == "abc"){
+            enemies[0].health -= 10;
+            console.log("b");
+            if(enemies[0].health <= 0){
+              closestHit.position.y = 10;
+            }
+         }
+       }
+    }
+}
+
 const clock = new THREE.Clock();
 
 const tick = () => {
@@ -284,6 +309,7 @@ const tick = () => {
 
 function animate(){
   var dt = clock.getDelta();
+  castRay();
   if(upkey){
     camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed * dt;
     for(let i = 0; i < walls.length; i++){
