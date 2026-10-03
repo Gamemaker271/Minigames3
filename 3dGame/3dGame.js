@@ -117,11 +117,13 @@ for (let i = 0; i < walls.length; i++){
   wallMesh.position.z = walls[i].y;
 }
 
-// gun
+// gun & win
 const gunTexture = new THREE.TextureLoader().load( "Textures/pistol.png" );
+const winTexture = new THREE.TextureLoader().load( "Textures/win.png" );
 const gunMaterial = new THREE.SpriteMaterial( { map: gunTexture, color: 0xffffff, sizeAttenuation: false } );
 const gunShootTexture = new THREE.TextureLoader().load( "Textures/pistol-shoot.png" );
 const gunShootMaterial = new THREE.SpriteMaterial( { map: gunShootTexture, color: 0xffffff, sizeAttenuation: false } );
+const winMaterial = new THREE.SpriteMaterial( { map: winTexture, color: 0xffffff, sizeAttenuation: false } );
 const gunSprite = new THREE.Sprite( gunMaterial );
 scene.add( gunSprite );
 
@@ -142,7 +144,7 @@ var enemies = [
   {type: 0, x: -6.5, y: 6.5, health: 100},
   {type: 0, x: -6.5, y: 3.5, health: 100},
   {type: 0, x: -6.5, y: -0.5, health: 100},
-  {type: 0, x: -6.5, y: -5.5, health: 100},
+  {type: 0, x: -6.5, y: -5.5, health: 100}
 ];
 // add them to scene
 for (let i = 0; i < enemies.length; i++){
@@ -157,7 +159,9 @@ for (let i = 0; i < enemies.length; i++){
 
   enemySprite.material.map = enemyTexture;
 
-  enemySprite.name = "abc"
+  enemySprite.name = "enemy"
+
+  enemySprite.enemyIndex = i;
 
   scene.add(enemySprite);
   enemySprite.position.x = enemies[i].x;
@@ -183,6 +187,8 @@ var lastrightspinkey = false;
 var lastfirekey = false;
 
 function handleKeyDown(event){
+  if (event.repeat) return; 
+
   lastupkey = upkey;
   lastdownkey = downkey;
   lastleftkey = leftkey;
@@ -191,57 +197,25 @@ function handleKeyDown(event){
   lastrightspinkey = rightspinkey;
   lastfirekey = firekey;
   // controls
-  if (event.key === 'w') {
-    upkey = true;
-  }
-  if (event.key === 's') {
-    downkey = true;
-  }
-  if (event.key === 'a') {
-    leftkey = true;
-  }
-  if (event.key === 'd') {
-    rightkey = true;
-  }
-  if (event.key === 'ArrowLeft') {
-    leftspinkey = true;
-  }
-  if (event.key === 'ArrowRight') {
-    rightspinkey = true;
-  }
-  if (event.key === 'Shift') {
-    firekey = true;
-  }
-  /*if(
-    event.ctrlKey && event.key.toLowerCase() === 'w' || 
-    event.ctrlKey && event.key.toLowerCase() === 's' || 
-    event.ctrlKey && event.key.toLowerCase() === 'a' || 
-    event.ctrlKey && event.key.toLowerCase() === 'd'
-  ){
-    event.preventDefault();
-  }*/
+  if (event.key === 'w') upkey = true;
+  if (event.key === 's') downkey = true;
+  if (event.key === 'a') leftkey = true;
+  if (event.key === 'd') rightkey = true;
+  if (event.key === 'ArrowLeft') leftspinkey = true;
+  if (event.key === 'ArrowRight') rightspinkey = true;
+  if (event.key === 'Shift') firekey = true;
 }
 function handleKeyUp(event){
   // controls
-  if (event.key === 'w') {
-    upkey = false;
-  }
-  if (event.key === 's') {
-    downkey = false;
-  }
-  if (event.key === 'a') {
-    leftkey = false;
-  }
-  if (event.key === 'd') {
-    rightkey = false;
-  }
-  if (event.key === 'ArrowLeft') {
-    leftspinkey = false;
-  }
-  if (event.key === 'ArrowRight') {
-    rightspinkey = false;
-  }
+  if (event.key === 'w') upkey = false;
+  if (event.key === 's') downkey = false;
+  if (event.key === 'a') leftkey = false;
+  if (event.key === 'd') rightkey = false;
+  if (event.key === 'ArrowLeft') leftspinkey = false;
+  if (event.key === 'ArrowRight') rightspinkey = false;
+
   if (event.key === 'Shift') {
+    lastfirekey = firekey; // Update last state right before releasing
     firekey = false;
   }
 }
@@ -274,19 +248,18 @@ function boxCollision(px, py, boxMinX, boxMinY, boxMaxX, boxMaxY) {
 const raycaster = new THREE.Raycaster();
 function castRay() {
     raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
-    
-    // 2. Calculate objects intersecting the picking ray
-    // (It is best practice to pass an array of target objects rather than the whole scene)
+
     const intersects = raycaster.intersectObjects(scene.children, true);
     
     if (intersects.length > 0) {
         // The first element is the closest object hit
         const closestHit = intersects[1].object;
         if(firekey){
-         if(closestHit.name == "abc"){
-            enemies[0].health -= 10;
-            console.log("b");
-            if(enemies[0].health <= 0){
+         if(closestHit.name == "enemy"){
+            const index = closestHit.enemyIndex;
+            enemies[index].health -= 10;
+            console.log("enemy " + index + " is at "+ enemies[index].health);
+            if(enemies[index].health <= 0){
               closestHit.position.y = 10;
             }
          }
@@ -376,6 +349,16 @@ function animate(){
     gunSprite.material = gunShootMaterial;
   }else{
     gunSprite.material = gunMaterial;
+  }
+
+  let alldead = true;
+  for(let i = 0; i < enemies.length; i++){
+    if(enemies[i].health > 0){
+      alldead = false;
+    }
+  }
+  if(alldead){
+    gunSprite.material = winMaterial;
   }
 
   camera.position.x += Math.sin(camera.rotation.y) * 0.02;
