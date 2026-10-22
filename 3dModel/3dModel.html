@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>3D Camera</title>
+    <link rel="stylesheet" href="https://gamemaker271.github.io/Minigames3/style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+                "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+            }
+        }
+    </script>
+  </head>
+  <body>
+    <header>
+      <button onclick="window.location.href='/Minigames3/index.html'">Back</button>
+      <button onclick="window.location.href='/index.html'">Back (Test)</button>
+      <h1>3D Camera</h1>
+    </header>
+    <main>
+      <canvas id="3dModelCanvas" width="800" height="500" style="border: black 1px solid;"></canvas>
+    </main>
+    <script type="module" src="3dModel.js"></script>
+  </body>
+</html>
