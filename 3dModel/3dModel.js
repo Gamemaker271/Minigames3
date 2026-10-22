@@ -8,6 +8,7 @@ const canvas = document.getElementById('3dModelCanvas');
 //const ctx = canvas.getContext('2d');
 
 import * as THREE from "three";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const w = canvas.width;
 const h = canvas.height;
@@ -24,14 +25,31 @@ const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
 const scene = new THREE.Scene();
 
+//model
+const loader = new GLTFLoader();
+
+loader.load(
+    'Resources/TrafficCone.gltf',
+    (gltf) => {
+        const model = gltf.scene;
+        scene.add(model);
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    (error) => {
+        console.error('An error happened:', error);
+    }
+);
+
 // icosahedron
-const geo = new THREE.IcosahedronGeometry(1.0, 2);
+/*const geo = new THREE.IcosahedronGeometry(1.0, 2);
 const mat = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     flatShading: true
 });
 const mesh = new THREE.Mesh(geo, mat);
-scene.add(mesh);
+scene.add(mesh);*/
 
 // floor
 const floorGeo = new THREE.BoxGeometry(1,1,1);
