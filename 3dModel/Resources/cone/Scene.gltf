@@ -1,0 +1,306 @@
+{
+  "asset": {
+    "copyright": "Traffic cone mesh CC-BY-4.0 hinndia on Sketchfab, https://sketchfab.com/3d-models/traffic-cone-573feef839d7450cb3e12da9986e7a98 - asphalt_02 textures CC0 by PolyHaven, https://polyhaven.com/a/asphalt_02 - Light bulb icon and final asset edits CC0 by Ed Mackey, 2026",
+    "generator": "gltfeditor.com",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "uri": "Scene.bin",
+      "byteLength": 216544
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 62052,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 62052,
+      "byteLength": 62052,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 124104,
+      "byteLength": 41368,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 165472,
+      "byteLength": 51072,
+      "target": 34963
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "normalized": false,
+      "count": 5171,
+      "min": [
+        -0.2099796086549759,
+        -0.20997965335845947,
+        -0.0005133152008056641
+      ],
+      "max": [
+        0.2099796086549759,
+        0.2099795639514923,
+        0.518314778804779
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "normalized": false,
+      "count": 5171,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        0.9999990463256836
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "normalized": false,
+      "count": 5171,
+      "min": [
+        0.0001785983331501484,
+        0.0001785755157470703
+      ],
+      "max": [
+        0.794103741645813,
+        0.9998215436935425
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 0,
+      "componentType": 5123,
+      "normalized": false,
+      "count": 25536,
+      "min": [
+        0
+      ],
+      "max": [
+        5170
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        1,
+        3
+      ],
+      "name": "Scene"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Cone Normal",
+      "mesh": 0
+    },
+    {
+      "name": "Cones",
+      "children": [
+        0
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        3.422854177870249e-8,
+        -0.9999999403953552,
+        0,
+        0,
+        0.9999999403953552,
+        3.422854177870249e-8,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Camera",
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        100,
+        1
+      ],
+      "camera": 0
+    },
+    {
+      "name": "Camera",
+      "children": [
+        2
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0.9925461411476135,
+        -0.12186933308839798,
+        0,
+        0,
+        0.12186933308839798,
+        0.9925461411476135,
+        0,
+        0,
+        0.3690060079097748,
+        1.190000057220459,
+        1
+      ]
+    }
+  ],
+  "cameras": [
+    {
+      "name": "Camera",
+      "type": "perspective",
+      "perspective": {
+        "aspectRatio": 1.7777777777777777,
+        "yfov": 0.6248278617858887,
+        "znear": 0.009999999776482582,
+        "zfar": 200
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "material": 0,
+          "mode": 4,
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "ConeBaseMat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.3499999940395355,
+        "baseColorTexture": {
+          "index": 0,
+          "texCoord": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1,
+          "texCoord": 0
+        }
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false,
+      "extensions": {
+        "KHR_materials_specular": {
+          "specularFactor": 1,
+          "specularColorFactor": [
+            4.011764705882353,
+            1,
+            0.9882352941176471
+          ]
+        }
+      }
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "name": "ConeBaseMat_baseColor.jpg",
+      "source": 0
+    },
+    {
+      "sampler": 1,
+      "name": "ConeBaseMat_metallicRoughness.jpg",
+      "source": 1
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9729,
+      "wrapS": 10497,
+      "wrapT": 10497
+    },
+    {
+      "magFilter": 9729,
+      "minFilter": 9729,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "images": [
+    {
+      "uri": "ConeBaseMat_baseColor.jpg",
+      "mimeType": "image/jpeg",
+      "name": "ConeBaseMat_baseColor.jpg"
+    },
+    {
+      "uri": "ConeBaseMat_metallicRoughness.jpg",
+      "mimeType": "image/jpeg",
+      "name": "ConeBaseMat_metallicRoughness.jpg"
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_specular"
+  ],
+  "extensions": {}
+}

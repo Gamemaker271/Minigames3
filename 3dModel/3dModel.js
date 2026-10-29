@@ -28,29 +28,68 @@ const scene = new THREE.Scene();
 //model
 const loader = new GLTFLoader();
 
-loader.setPath('Resources/a/')
-  .load(
-    'Suzanne.gltf',
+// suzanne
+loader.load(
+    'Resources/a/Suzanne.gltf',
     (gltf) => {
         const model = gltf.scene;
         scene.add(model);
     },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    },
+    (xhr) => {},
     (error) => {
-        console.error('An error happened:', error);
+        console.error('error with loading mesh:', error);
     }
 );
-
-// icosahedron
-/*const geo = new THREE.IcosahedronGeometry(1.0, 2);
-const mat = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    flatShading: true
-});
-const mesh = new THREE.Mesh(geo, mat);
-scene.add(mesh);*/
+// cone
+loader.load(
+    'Resources/cone/Scene.gltf',
+    (gltf) => {
+        // left
+        const cone1 = gltf.scene;
+        cone1.name = "cone1";
+        cone1.position.set(-1.5, -0.5, 0);
+        scene.add(cone1);
+        // right
+        const cone2 = cone1.clone();
+        cone2.name = "cone2";
+        cone2.position.set(1.5, -0.5, 0);
+        scene.add(cone2);
+        // back
+        const cone3 = cone1.clone();
+        cone3.name = "cone3";
+        cone3.position.set(0, -0.5, -1.5);
+        scene.add(cone3);
+        // left back
+        const cone4 = cone1.clone();
+        cone4.name = "cone4";
+        cone4.position.set(-1.06, -0.5, -1.06);
+        scene.add(cone4);
+        // right back
+        const cone5 = cone1.clone();
+        cone5.name = "cone5";
+        cone5.position.set(1.06, -0.5, -1.06);
+        scene.add(cone5);
+        // left front
+        const cone6 = cone1.clone();
+        cone6.name = "cone6";
+        cone6.position.set(-1.06, -0.5, 1.06);
+        scene.add(cone6);
+        // right front
+        const cone7 = cone1.clone();
+        cone7.name = "cone7";
+        cone7.position.set(1.06, -0.5, 1.06);
+        scene.add(cone7);
+        // front
+        const cone8 = cone1.clone();
+        cone8.name = "cone8";
+        cone8.position.set(0, -0.5, 1.5);
+        scene.add(cone8);
+    },
+    (xhr) => {},
+    (error) => {
+        console.error('error with loading mesh:', error);
+    }
+);
 
 // floor
 const floorGeo = new THREE.BoxGeometry(1,1,1);
@@ -64,12 +103,12 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
 // Ambient Light: Illuminates all objects equally (prevents pitch-black shadows)
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // white light, 0.8 intensity
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // white, 0.8 intensity
 scene.add(ambientLight);
 
 // Directional Light: Mimics sunlight to create highlights and depth
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // white light, 1.0 intensity
-directionalLight.position.set(5, 10, 7); // Positioned up, right, and forward
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // white, 1 intensity
+directionalLight.position.set(10, 10, 10);
 scene.add(directionalLight);
 
 const speed = 0.05;
@@ -137,7 +176,9 @@ function handleKeyUp(event){
   }
 }
 
-camera.position.z = 2;
+camera.position.x = -0.86;
+camera.position.z = 3.15;
+camera.rotation.y = -0.24;
 
 floorMesh.position.y = -0.55;
 floorMesh.scale.x = 20;
@@ -167,6 +208,8 @@ function animate(t = 0){
     if(rightspinkey){
         camera.rotation.y -= rotSpeed;
     }
+    //console.log("position: " + camera.position.x + ", " + camera.position.y + ", " + camera.position.z);
+    //console.log("rot: " + camera.rotation.y);
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 }
