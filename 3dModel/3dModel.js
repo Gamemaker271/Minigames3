@@ -28,8 +28,9 @@ const scene = new THREE.Scene();
 //model
 const loader = new GLTFLoader();
 
-loader.load(
-    'Resources/TrafficCone.gltf',
+loader.setPath('Resources/a/')
+  .load(
+    'Suzanne.gltf',
     (gltf) => {
         const model = gltf.scene;
         scene.add(model);
@@ -61,6 +62,15 @@ scene.add(floorMesh);
 
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
+
+// Ambient Light: Illuminates all objects equally (prevents pitch-black shadows)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // white light, 0.8 intensity
+scene.add(ambientLight);
+
+// Directional Light: Mimics sunlight to create highlights and depth
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // white light, 1.0 intensity
+directionalLight.position.set(5, 10, 7); // Positioned up, right, and forward
+scene.add(directionalLight);
 
 const speed = 0.05;
 const rotSpeed = 0.03;
