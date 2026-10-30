@@ -28,6 +28,33 @@ const scene = new THREE.Scene();
 //model
 const loader = new GLTFLoader();
 
+// f22
+loader.load(
+    'Resources/f22/f22.gltf',
+    (gltf) => {
+        const model = gltf.scene;
+        model.scale.set(0.03, 0.03, 0.03);
+        model.rotation.set(0, THREE.MathUtils.degToRad(270), 0);
+        model.position.set(4, 0, -1);
+        model.traverse((child) => {
+        if (child.isMesh) {
+            // Apply to the existing material
+            //child.material.map = albedoTexture;
+            
+            // Optional: Reset base color to white so it doesn't tint your texture
+            child.material.color.setHex(0xff0000); 
+            
+            // Tell Three.js the material needs to recompile
+            child.material.needsUpdate = true;
+          }
+        });
+        scene.add(model);
+    },
+    (xhr) => {},
+    (error) => {
+        console.error('error with loading mesh:', error);
+    }
+);
 // suzanne
 loader.load(
     'Resources/a/Suzanne.gltf',
@@ -99,14 +126,10 @@ const floorMat = new THREE.MeshStandardMaterial({
 const floorMesh = new THREE.Mesh(floorGeo, floorMat);
 scene.add(floorMesh);
 
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
-scene.add(hemiLight);
-
-// Ambient Light: Illuminates all objects equally (prevents pitch-black shadows)
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // white, 0.8 intensity
 scene.add(ambientLight);
 
-// Directional Light: Mimics sunlight to create highlights and depth
+// highlights, shadows
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // white, 1 intensity
 directionalLight.position.set(10, 10, 10);
 scene.add(directionalLight);
