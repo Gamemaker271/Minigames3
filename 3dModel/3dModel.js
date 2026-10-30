@@ -35,16 +35,10 @@ loader.load(
         const model = gltf.scene;
         model.scale.set(0.03, 0.03, 0.03);
         model.rotation.set(0, THREE.MathUtils.degToRad(270), 0);
-        model.position.set(4, 0, -1);
+        model.position.set(4, 0.11, -1);
         model.traverse((child) => {
-        if (child.isMesh) {
-            // Apply to the existing material
-            //child.material.map = albedoTexture;
-            
-            // Optional: Reset base color to white so it doesn't tint your texture
-            child.material.color.setHex(0xff0000); 
-            
-            // Tell Three.js the material needs to recompile
+          if (child.isMesh) {
+            child.material.color.setHex(0xff0000);
             child.material.needsUpdate = true;
           }
         });
