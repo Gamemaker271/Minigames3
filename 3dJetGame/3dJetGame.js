@@ -6,10 +6,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const w = canvas.width;
 const h = canvas.height;
-
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias : true });
 renderer.setSize(w, h);
-//document.body.appendChild(renderer.domElement);
 
 const fov = 60;
 const aspect = w / h;
@@ -18,15 +16,13 @@ const far = 50;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
 const scene = new THREE.Scene();
-
-//model
 const loader = new GLTFLoader();
-
 // f22
 loader.load(
     'Resources/f22/f22.gltf',
     (gltf) => {
         const model = gltf.scene;
+        model.name = "f22";
         model.scale.set(0.03, 0.03, 0.03);
         model.rotation.set(0, THREE.MathUtils.degToRad(90), 0);
         model.position.set(0, 0.11, -3);
@@ -60,19 +56,20 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // white, 1 in
 directionalLight.position.set(10, 10, 10);
 scene.add(directionalLight);
 
-const speed = 0.05;
-const rotSpeed = 0.03;
-
 var upkey = false;
 var downkey = false;
 var leftkey = false;
 var rightkey = false;
+var upspinkey = false;
+var downspinkey = false;
 var leftspinkey = false;
 var rightspinkey = false;
 var lastupkey = false;
 var lastdownkey = false;
 var lastleftkey = false;
 var lastrightkey = false;
+var lastupspinkey = false;
+var lastdownspinkey = false;
 var lastleftspinkey = false;
 var lastrightspinkey = false;
 
@@ -81,6 +78,8 @@ function handleKeyDown(event){
   lastdownkey = downkey;
   lastleftkey = leftkey;
   lastrightkey = rightkey;
+  lastupspinkey = leftkey;
+  lastdownspinkey = rightkey;
   lastleftspinkey = leftspinkey;
   lastrightspinkey = rightspinkey;
   // controls
@@ -95,6 +94,12 @@ function handleKeyDown(event){
   }
   if (event.key === 'd') {
     rightkey = true;
+  }
+  if (event.key === 'ArrowUp') {
+    upspinkey = true;
+  }
+  if (event.key === 'ArrowDown') {
+    downspinkey = true;
   }
   if (event.key === 'ArrowLeft') {
     leftspinkey = true;
@@ -117,6 +122,12 @@ function handleKeyUp(event){
   if (event.key === 'd') {
     rightkey = false;
   }
+  if (event.key === 'ArrowUp') {
+    upspinkey = false;
+  }
+  if (event.key === 'ArrowDown') {
+    downspinkey = false;
+  }
   if (event.key === 'ArrowLeft') {
     leftspinkey = false;
   }
@@ -125,38 +136,71 @@ function handleKeyUp(event){
   }
 }
 
+const speed = 0.05;
+const rotSpeed = 0.03;
+
+var playerx = 0;
+var playery = 0;
+var playerz = 0;
+var playeryaw = 0;
+var playerpitch = 0;
+var playerroll = 0;
+
 camera.position.x = 0;
 camera.position.z = 0;
 camera.rotation.y = 0;
-
-floorMesh.position.y = -0.55 - 2;
+floorMesh.position.y = -0.55;
 floorMesh.scale.x = 20;
 floorMesh.scale.y = 0.1;
 floorMesh.scale.z = 20;
 
 function animate(t = 0){
+    // get models/objects
+    let f22model = scene.getObjectByName("f22");
+
     if(upkey){
-        camera.position.z += Math.cos(camera.rotation.y + Math.PI) * speed;
-        camera.position.x += Math.sin(camera.rotation.y + Math.PI) * speed;
+        //playerz += Math.cos(playeryaw + Math.PI) * speed;
+        //playerx += Math.sin(playeryaw + Math.PI) * speed;
+        let movementvector = new THREE.Vector3();
+        if(f22model){
+          f22model.rotation.set(playerpitch, playeryaw + THREE.MathUtils.degToRad(180), playerroll);
+          f22model.getWorldDirection(movementvector);
+        }
+        movementvector.multiplyScalar(speed);
+        playerx += movementvector.x;
+        playery += movementvector.y;
+        playerz += movementvector.z;
     }
     if(downkey){
-        camera.position.z -= Math.cos(camera.rotation.y + Math.PI) * speed;
-        camera.position.x -= Math.sin(camera.rotation.y + Math.PI) * speed;
+        playerz -= Math.cos(playeryaw + Math.PI) * speed;
+        playerx -= Math.sin(playeryaw + Math.PI) * speed;
     }
     if(leftkey){
-        camera.position.z += Math.sin(camera.rotation.y) * speed;
-        camera.position.x -= Math.cos(camera.rotation.y) * speed;
+        playeryaw -= rotSpeed;
     }
     if(rightkey){
-        camera.position.z -= Math.sin(camera.rotation.y) * speed;
-        camera.position.x += Math.cos(camera.rotation.y) * speed;
+        playeryaw += rotSpeed;
+    }
+    if(upspinkey){
+        playerpitch -= rotSpeed;
+    }
+    if(downspinkey){
+        playerpitch += rotSpeed;
     }
     if(leftspinkey){
-        camera.rotation.y += rotSpeed;
+        playerroll += rotSpeed;
     }
     if(rightspinkey){
-        camera.rotation.y -= rotSpeed;
+        playerroll -= rotSpeed;
     }
+
+    camera.position.set(playerx, playery + 2, playerz + 2.75);
+    camera.rotation.x = THREE.MathUtils.degToRad(340);
+    if(f22model){
+      f22model.position.set(playerx, playery, playerz);
+      f22model.rotation.set(playerpitch, playeryaw + THREE.MathUtils.degToRad(90), playerroll);
+    }
+
     //console.log("position: " + camera.position.x + ", " + camera.position.y + ", " + camera.position.z);
     //console.log("rot: " + camera.rotation.y);
     requestAnimationFrame(animate);
