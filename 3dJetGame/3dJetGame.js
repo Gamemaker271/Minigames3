@@ -19,12 +19,12 @@ const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 // f22
 loader.load(
-    'Resources/f22/f22.gltf',
+    'Resources/f22_2/f22.gltf',
     (gltf) => {
         const model = gltf.scene;
         model.name = "f22";
         model.scale.set(0.03, 0.03, 0.03);
-        model.rotation.set(0, THREE.MathUtils.degToRad(90), 0);
+        //model.rotation.set(0, THREE.MathUtils.degToRad(90), 0);
         model.position.set(0, 0.11, -3);
         model.traverse((child) => {
           if (child.isMesh) {
@@ -163,17 +163,17 @@ function animate(t = 0){
         //playerx += Math.sin(playeryaw + Math.PI) * speed;
         let movementvector = new THREE.Vector3();
         if(f22model){
-          f22model.rotation.set(playerpitch, playeryaw + THREE.MathUtils.degToRad(180), playerroll);
+          //f22model.rotation.set(playerpitch, playeryaw, playerroll);
           f22model.getWorldDirection(movementvector);
         }
         movementvector.multiplyScalar(speed);
-        playerx += movementvector.x;
-        playery += movementvector.y;
-        playerz += movementvector.z;
+        playerx += -movementvector.x;
+        playery += -movementvector.y;
+        playerz += -movementvector.z;
     }
     if(downkey){
-        playerz -= Math.cos(playeryaw + Math.PI) * speed;
-        playerx -= Math.sin(playeryaw + Math.PI) * speed;
+        //playerz -= Math.cos(playeryaw + Math.PI) * speed;
+        //playerx -= Math.sin(playeryaw + Math.PI) * speed;
     }
     if(leftkey){
         playeryaw -= rotSpeed;
@@ -198,7 +198,7 @@ function animate(t = 0){
     camera.rotation.x = THREE.MathUtils.degToRad(340);
     if(f22model){
       f22model.position.set(playerx, playery, playerz);
-      f22model.rotation.set(playerpitch, playeryaw + THREE.MathUtils.degToRad(90), playerroll);
+      f22model.rotation.set(playerpitch, playeryaw, playerroll);
     }
 
     //console.log("position: " + camera.position.x + ", " + camera.position.y + ", " + camera.position.z);
