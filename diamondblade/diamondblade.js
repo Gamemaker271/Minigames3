@@ -27,7 +27,7 @@ var selectedlevelnum = 1;
 var levelposition = 0;
 
 var trailpositions = [];
-const MAX_TRAIL_LENGTH = 30;
+const MAX_TRAIL_LENGTH = 50; //30
 
 var obstacleMode = 0; // 0 blocks, 1 triangles
 
@@ -57,10 +57,41 @@ function handleAndDrawObstacles() {
       ctx.fillRect(drawX, obs.y, obs.width, obs.height);
       ctx.strokeRect(drawX, obs.y, obs.width, obs.height);
     } else if (obs.type === 'spike') {
-      ctx.fillStyle = 'black';
+      let side = obs.width;
+      const h = side * (Math.sqrt(3) / 2);
+      let cx = drawX;
+      let cy = obs.y;
+      ctx.beginPath();
+      // top
+      ctx.moveTo((cx + 0.5 * gridSize), (cy + 0.5 * gridSize) - h / 2);
+      // bottom left
+      ctx.lineTo((cx + 0.5 * gridSize) - side / 2, (cy + 0.5 * gridSize) + h / 2);
+      // bottom right
+      ctx.lineTo((cx + 0.5 * gridSize) + side / 2, (cy + 0.5 * gridSize) + h / 2);
+      ctx.closePath();
       ctx.strokeStyle = 'white';
-      ctx.fillRect(drawX, obs.y, obs.width, obs.height);
-      ctx.strokeRect(drawX, obs.y, obs.width, obs.height);
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = 'black';
+      ctx.fill();
+    } else if (obs.type === 'invertspike') {
+      let side = obs.width;
+      const h = side * (Math.sqrt(3) / 2);
+      let cx = drawX;
+      let cy = obs.y;
+      ctx.beginPath();
+      // top
+      ctx.moveTo((cx + 0.5 * gridSize), (cy + 0.5 * gridSize) + h / 2);
+      // bottom left
+      ctx.lineTo((cx + 0.5 * gridSize) - side / 2, (cy + 0.5 * gridSize) - h / 2);
+      // bottom right
+      ctx.lineTo((cx + 0.5 * gridSize) + side / 2, (cy + 0.5 * gridSize) - h / 2);
+      ctx.closePath();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = 'black';
+      ctx.fill();
     } else if (obs.type === 'end') {
       ctx.fillStyle = 'yellow';
       ctx.strokeStyle = 'black';
@@ -245,6 +276,7 @@ function Logic(){
 
   // trail stuff
   // Save current position to the start of array
+  if(speed == 2 && (playerx % 2 == 0) || (speed > 2))
   trailpositions.unshift({ x: playerx, y: playery });
   // pop end of array
   if (trailpositions.length > MAX_TRAIL_LENGTH) {
@@ -318,14 +350,14 @@ function Draw(){
       // draw it
       if(trailpositions[i].y == 0 || trailpositions[i].y == screenh - playerheight){
         ctx.fillStyle = 'white';
-        let smallbox = gridSize * 0.65;
+        let smallbox = gridSize * 0.5;//0.65
         ctx.fillRect(trailpositions[i].x + (gridSize - smallbox) / 2, trailpositions[i].y + (gridSize - smallbox) / 2, smallbox, smallbox);
 
       }
       else{
-        let centerX = trailpositions[i].x + gridSize / 2;
-        let centerY = trailpositions[i].y + gridSize / 2;
-        let radius = gridSize / 2;
+        let centerX = trailpositions[i].x + gridSize / 2; // grid/2
+        let centerY = trailpositions[i].y + gridSize / 2; // grid/2
+        let radius = gridSize / 3; // grid/2
 
         // draw the diamond shaped path
         ctx.beginPath();
@@ -424,10 +456,12 @@ async function Reset(){
     selectedlevel = await loadLevelFromFile("wavelevels/level3.txt");
   }
   else if(selectedlevelnum == 4){
-    selectedlevel = await loadLevelFromFile("wavelevels/level4.txt");
+    speed = 2;
+    selectedlevel = await loadLevelFromFile("wavelevels/level3.txt");
   }
   else if(selectedlevelnum == 5){
-    selectedlevel = await loadLevelFromFile("wavelevels/level5.txt");
+    speed = 3;
+    selectedlevel = await loadLevelFromFile("wavelevels/level4.txt");
   }
 
   // use array to create obstacles 
@@ -436,7 +470,9 @@ async function Reset(){
       if (selectedlevel[r][c] === '#') {
         spawnObstacle(c * gridSize, r * gridSize, 'cube');
       } else if (selectedlevel[r][c] === 's') { 
-        spawnObstacle(c * gridSize, r * gridSize, 'spike'); // end trigger
+        spawnObstacle(c * gridSize, r * gridSize, 'spike');
+      } else if (selectedlevel[r][c] === 'z') { 
+        spawnObstacle(c * gridSize, r * gridSize, 'invertspike');
       } else if (selectedlevel[r][c] === 'e') { 
         spawnObstacle(c * gridSize, r * gridSize, 'end'); // end trigger
       } else if (selectedlevel[r][c] === 'L') { 
