@@ -48,16 +48,22 @@ function handleAndDrawObstacles() {
     let obs = obstacles[i];
     let drawX = obs.x - levelposition;
 
-    // --- DRAWING LOGIC ---
-    ctx.fillStyle = '#FF4136';
-    ctx.strokeStyle = '#000000';
+    // drawing
+    ctx.fillStyle = 'black'; //#FF413;
+    ctx.strokeStyle = 'white';
     ctx.lineWidth = 2;
 
     if (obs.type === 'cube') {
       ctx.fillRect(drawX, obs.y, obs.width, obs.height);
       ctx.strokeRect(drawX, obs.y, obs.width, obs.height);
+    } else if (obs.type === 'spike') {
+      ctx.fillStyle = 'black';
+      ctx.strokeStyle = 'white';
+      ctx.fillRect(drawX, obs.y, obs.width, obs.height);
+      ctx.strokeRect(drawX, obs.y, obs.width, obs.height);
     } else if (obs.type === 'end') {
       ctx.fillStyle = 'yellow';
+      ctx.strokeStyle = 'black';
       ctx.fillRect(drawX, obs.y, obs.width, obs.height);
       ctx.strokeRect(drawX, obs.y, obs.width, obs.height);
     } else {
@@ -85,13 +91,17 @@ function handleAndDrawObstacles() {
       ctx.stroke();
     }
 
-    // --- COLLISION LOGIC --- //
+    // collision //
     // First step: broad AABB check (is the player even touching the general tile zone?)
+    let colpx = playerx + playerwidth * 0.375;
+    let colpy = playery + playerheight * 0.375;
+    let colpw = playerwidth * 0.5;
+    let colph =  playerheight * 0.5;
     let boxCollision = (
-      playerx < drawX + obs.width &&
-      playerx + playerwidth > drawX &&
-      playery < obs.y + obs.height &&
-      playery + playerheight > obs.y
+      colpx < drawX + obs.width &&
+      colpx + colpw > drawX &&
+      colpy < obs.y + obs.height &&
+      colpy + colph > obs.y
     );
 
     if (boxCollision) {
@@ -266,11 +276,11 @@ if (gamemode === "wave"){
 }
 
 function Draw(){
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   // menu screen
   if(menu){
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.font = '16px sans-serif';
     ctx.fillText('Wave Game', 165, 16);
     ctx.fillText('Press enter to play', 145, 32);
@@ -284,7 +294,7 @@ function Draw(){
       ctx.fillStyle = 'red';
       ctx.fillText('OFF', 220, 64);
     }
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.fillText('Macro', 170, 80);
     if(macro){
       ctx.fillStyle = 'green';
@@ -293,7 +303,7 @@ function Draw(){
       ctx.fillStyle = 'red';
       ctx.fillText('OFF', 220, 80);
     }
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
 
     ctx.fillText('Selected level:', 150, 96);
     ctx.fillText(selectedlevelnum, 260, 96);
@@ -307,7 +317,7 @@ function Draw(){
 
       // draw it
       if(trailpositions[i].y == 0 || trailpositions[i].y == screenh - playerheight){
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = 'white';
         let smallbox = gridSize * 0.65;
         ctx.fillRect(trailpositions[i].x + (gridSize - smallbox) / 2, trailpositions[i].y + (gridSize - smallbox) / 2, smallbox, smallbox);
 
@@ -325,21 +335,69 @@ function Draw(){
         ctx.lineTo(centerX - radius, centerY); // Left vertex
         ctx.closePath();
 
-        ctx.fillStyle = 'red';
-        ctx.fill();
+        ctx.fillStyle = 'white';
+        if(i > 1){
+          ctx.fill();
+        }
       }
     }
     // draw player
-    if(noclip){
+    /*if(noclip){
       ctx.fillStyle = 'grey';
     }else{
-      ctx.fillStyle = 'blue';
+      ctx.fillStyle = 'black';
     }
-    ctx.fillRect(playerx + playerwidth * 0.125, playery + playerheight * 0.125, playerwidth, playerheight);
+    ctx.fillRect(playerx + playerwidth * 0.125, playery + playerheight * 0.125, playerwidth, playerheight);*/
     //draw player border
-    ctx.strokeStyle = 'black';
+    //ctx.strokeStyle = 'white';
+    //ctx.lineWidth = 2;
+    //ctx.strokeRect(playerx + playerwidth * 0.125, playery + playerheight * 0.125, playerwidth, playerheight);
+
+    // AI triangle sht
+    ctx.fillStyle = noclip ? 'grey' : 'black';
+    ctx.strokeStyle = 'white';
     ctx.lineWidth = 2;
-    ctx.strokeRect(playerx + playerwidth * 0.125, playery + playerheight * 0.125, playerwidth, playerheight);
+
+    let x = playerx + playerwidth * 0.125;
+    let y = playery + playerheight * 0.125;
+    if(macro){
+        x -= 5;
+        y += 2;
+    }
+
+    // Target angle: UP (-45deg) vs DOWN (+45deg)
+    let angle = spacekey ? -Math.PI / 4 : Math.PI / 4;
+
+    // Calculate rotation center
+    let centerX = x + playerwidth / 2;
+    let centerY = y + playerheight / 2;
+
+    ctx.save(); // save state
+
+    // rotate around center point
+    if(!(playery == 0 || playery == screenh - playerheight)){
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle);
+        ctx.translate(-centerX, -centerY);
+    }
+
+    // define triangle path
+    ctx.beginPath();
+    ctx.moveTo(x + playerwidth, y + playerheight / 2); // Front tip
+    ctx.lineTo(x, y + 0);                               // Top back corner
+    ctx.lineTo(x, y - 0 + playerheight);                // Bottom back corner
+    ctx.closePath();
+
+    // fill and stroke the path
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore(); // restore canvas state
+
+    //hitbox
+    ctx.strokeStyle = "red"
+    ctx.strokeRect(playerx + playerwidth * 0.375, playery + playerheight * 0.375, playerwidth * 0.5, playerheight * 0.5);
+
     //obstacles
     handleAndDrawObstacles();
   }
@@ -354,12 +412,15 @@ async function Reset(){
   gamemode = "wave";
   let selectedlevel;
   if(selectedlevelnum == 1){
+    speed = 3;
     selectedlevel = await loadLevelFromFile("wavelevels/level1.txt");
   }
   else if(selectedlevelnum == 2){
+    speed = 4;
     selectedlevel = await loadLevelFromFile("wavelevels/level2.txt");
   }
   else if(selectedlevelnum == 3){
+    speed = 3;
     selectedlevel = await loadLevelFromFile("wavelevels/level3.txt");
   }
   else if(selectedlevelnum == 4){
@@ -374,6 +435,8 @@ async function Reset(){
     for (let c = 0; c < selectedlevel[r].length; c++) {
       if (selectedlevel[r][c] === '#') {
         spawnObstacle(c * gridSize, r * gridSize, 'cube');
+      } else if (selectedlevel[r][c] === 's') { 
+        spawnObstacle(c * gridSize, r * gridSize, 'spike'); // end trigger
       } else if (selectedlevel[r][c] === 'e') { 
         spawnObstacle(c * gridSize, r * gridSize, 'end'); // end trigger
       } else if (selectedlevel[r][c] === 'L') { 
